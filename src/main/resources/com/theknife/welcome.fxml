@@ -10,7 +10,7 @@
 <?import javafx.geometry.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.theknife.PrimaryController"
+            fx:controller="com.theknife.WelcomeController"
             fx:id="rootPane"
             prefWidth="640" prefHeight="480"
             style="-fx-background-color: rgb(47,98,84);">

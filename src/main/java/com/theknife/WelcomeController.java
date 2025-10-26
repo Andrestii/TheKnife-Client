@@ -5,11 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Label;
-import javafx.beans.binding.Bindings;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.Priority;
 
-public class PrimaryController {
+public class WelcomeController {
 
     @FXML
     private BorderPane rootPane;
@@ -24,13 +23,9 @@ public class PrimaryController {
     private VBox linksBox;
 
     @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
-    }
-
-    @FXML
     private void onRegisterClicked() throws IOException {
-        App.setRoot("register");
+        System.out.println("DEBUG: onRegisterClicked chiamato");
+        App.setRoot("registrazione");
     }
 
     @FXML
