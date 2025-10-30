@@ -27,8 +27,20 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        String resourcePath = fxml + ".fxml";
+        System.out.println("Tentativo di caricamento FXML: " + resourcePath);
+        var resource = App.class.getResource(resourcePath);
+        if (resource == null) {
+            System.out.println("ERRORE: Risorsa non trovata: " + resourcePath);
+            throw new IOException("Risorsa non trovata: " + resourcePath);
+        }
+        FXMLLoader fxmlLoader = new FXMLLoader(resource);
+        try {
+            return fxmlLoader.load();
+        } catch (Exception e) {
+            System.out.println("ERRORE nel caricamento di " + resourcePath + ": " + e.getMessage());
+            throw e;
+        }
     }
 
     public static void main(String[] args) {
