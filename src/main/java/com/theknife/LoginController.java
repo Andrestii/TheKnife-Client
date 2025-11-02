@@ -25,27 +25,11 @@ public class LoginController {
 
     @FXML
     private void onBackClicked() throws IOException {
-        App.setRoot("welcome"); // Torna alla schermata di benvenuto
+        App.setRoot("welcome");
     }
 
     @FXML
-    private void onLoginClicked() throws IOException {
-        String target = null;
-        if (clienteRadio.isSelected()) {
-            target = "clientehome";
-        } else if (ristoratoreRadio.isSelected()) {
-            target = "ristoratorehome";
-        } else {
-            System.out.println("Seleziona un ruolo prima di procedere!");
-            return;
-        }
-
-        // Verify the FXML resource exists before switching to avoid Location not set exceptions
-        if (App.class.getResource(target + ".fxml") == null) {
-            System.out.println("FXML non trovato per: " + target + " (nessun file " + target + ".fxml nella resources)");
-            return;
-        }
-
-        App.setRoot(target);
+    private void onInviaClicked() throws IOException {
+        App.setRoot("home");
     }
 }

@@ -16,7 +16,6 @@ public class GuestController {
 
     @FXML
     private void onInviaClicked() throws IOException {
-        // Per ora: torna semplicemente alla home principale
-        App.setRoot("apphome"); // quando creerai la schermata apphome.fxml
+        App.setRoot("home");
     }
 }

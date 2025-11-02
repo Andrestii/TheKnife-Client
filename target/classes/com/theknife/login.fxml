@@ -66,7 +66,7 @@
                 </GridPane>
 
         <!-- Bottone Invia -->
-        <Button text="Invia" onAction="#onLoginClicked"
+        <Button text="Invia" onAction="#onInviaClicked"
             style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white; -fx-font-size: 15px; -fx-background-radius: 8; -fx-padding: 8 20;"/>
             </VBox>
         </VBox>
