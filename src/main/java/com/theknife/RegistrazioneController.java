@@ -18,21 +18,24 @@ public class RegistrazioneController {
 
     private ToggleGroup ruoloGroup;
 
+    // Serve a rendere mutuamente esclusivi i due RadioButton (“Cliente” o “Ristoratore”) 
+    // e garantire che funzioni anche se l’FXML è parzialmente modificato o corrotto.
     @FXML
     public void initialize() {
-        // Crea il ToggleGroup e collega i RadioButton
         ruoloGroup = new ToggleGroup();
-        clienteRadio.setToggleGroup(ruoloGroup);
-        ristoratoreRadio.setToggleGroup(ruoloGroup);
+        if (clienteRadio != null && ristoratoreRadio != null) {
+            clienteRadio.setToggleGroup(ruoloGroup);
+            ristoratoreRadio.setToggleGroup(ruoloGroup);
+        }
     }
 
     @FXML
     private void onBackClicked() throws IOException {
-        App.setRoot("welcome"); // Torna alla schermata principale
+        App.setRoot("welcome");
     }
 
     @FXML
     private void onSubmitClicked() throws IOException {
-        App.setRoot("home"); // Per ora solo cambio schermata
+        App.setRoot("home");
     }
 }

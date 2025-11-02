@@ -24,7 +24,6 @@ public class WelcomeController {
 
     @FXML
     private void onRegisterClicked() throws IOException {
-        System.out.println("DEBUG: onRegisterClicked chiamato");
         App.setRoot("registrazione");
     }
 

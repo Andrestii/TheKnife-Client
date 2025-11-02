@@ -13,9 +13,10 @@ public class LoginController {
 
     private ToggleGroup ruoloGroup;
 
+    // Serve a rendere mutuamente esclusivi i due RadioButton (“Cliente” o “Ristoratore”) 
+    // e garantire che funzioni anche se l’FXML è parzialmente modificato o corrotto.
     @FXML
-    public void initialize() {
-        // create ToggleGroup in controller to avoid malformed FXML toggleGroup attributes
+    public void initialize() { 
         ruoloGroup = new ToggleGroup();
         if (clienteRadio != null && ristoratoreRadio != null) {
             clienteRadio.setToggleGroup(ruoloGroup);
