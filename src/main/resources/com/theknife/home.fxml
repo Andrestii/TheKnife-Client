@@ -38,9 +38,7 @@
     <center>
         <VBox alignment="CENTER" spacing="25">
             <VBox alignment="CENTER" spacing="20" maxWidth="600"
-                  style="-fx-background-color: white;
-                         -fx-background-radius: 15;
-                         -fx-padding: 40;">
+                  style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 40;">
 
                 <!-- Logo -->
                 <ImageView fx:id="logoImage" fitHeight="90" fitWidth="90">
@@ -51,9 +49,7 @@
 
                 <!-- Titolo -->
                 <Label text="Trova il ristorante giusto per te!"
-                       style="-fx-font-size: 26px;
-                              -fx-font-weight: bold;
-                              -fx-text-fill: rgb(47,98,84);" />
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: rgb(47,98,84);" />
 
                 <!-- Barra di ricerca -->
                 <HBox spacing="0" alignment="CENTER">
@@ -63,33 +59,21 @@
                             text="Posizione"
                             prefWidth="150"
                             prefHeight="35"
-                            style="-fx-font-size: 14px;
-                                    -fx-border-color: rgb(47,98,84);
-                                    -fx-border-width: 1;
-                                    -fx-background-radius: 10 0 0 10;
-                                    -fx-border-radius: 10 0 0 10;" />
+                            style="-fx-font-size: 14px; -fx-border-color: rgb(47,98,84); -fx-border-width: 1; -fx-background-radius: 10 0 0 10; -fx-border-radius: 10 0 0 10;" />
 
                     <!-- Campo di Ricerca -->
                     <TextField fx:id="searchField"
-                            promptText="tipo di cucina, nome del ristorante..."
+                            promptText="Nome del ristorante, tipo di cucina, ecc..."
                             prefWidth="350"
                             prefHeight="35"
-                            style="-fx-font-size: 14px;
-                                    -fx-border-color: rgb(47,98,84);
-                                    -fx-border-width: 1;
-                                    -fx-border-radius: 0;" />
+                            style="-fx-font-size: 14px; -fx-border-color: rgb(47,98,84); -fx-border-width: 1; -fx-border-radius: 0;" />
 
                     <!-- Bottone Cerca -->
                     <Button text="Cerca"
                             prefWidth="100"
                             prefHeight="35"
                             onAction="#onSearchClicked"
-                            style="-fx-background-color: rgb(47,98,84);
-                                -fx-text-fill: white;
-                                -fx-font-weight: bold;
-                                -fx-background-radius: 0 10 10 0;
-                                -fx-border-radius: 0 10 10 0;
-                                -fx-font-size: 14px;" />
+                            style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 0 10 10 0; -fx-border-radius: 0 10 10 0; -fx-font-size: 14px;" />
                 </HBox>
             </VBox>
         </VBox>

@@ -10,17 +10,10 @@ import javafx.scene.layout.Priority;
 
 public class WelcomeController {
 
-    @FXML
-    private BorderPane rootPane;
-
-    @FXML
-    private VBox cardBox;
-
-    @FXML
-    private Label titleLabel;
-
-    @FXML
-    private VBox linksBox;
+    @FXML private BorderPane rootPane;
+    @FXML private VBox cardBox;
+    @FXML private Label titleLabel;
+    @FXML private VBox linksBox;
 
     @FXML
     private void onRegisterClicked() throws IOException {
