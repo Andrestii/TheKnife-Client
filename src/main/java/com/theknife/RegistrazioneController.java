@@ -104,6 +104,17 @@ public class RegistrazioneController {
 
         // Se tutto valido
         if (valido) {
+            SessioneUtente sessione = SessioneUtente.getInstance();
+            sessione.reset();
+            sessione.setNome(nomeField.getText());
+            sessione.setCognome(cognomeField.getText());
+            sessione.setDataNascita(dataNascitaField.getText());
+            sessione.setLuogo(domicilioField.getText());
+            sessione.setUsername(usernameField.getText());
+            sessione.setPassword(passwordField.getText());
+            sessione.setRuolo(clienteRadio.isSelected() ? Ruolo.CLIENTE : Ruolo.RISTORATORE);
+            SessioneUtente.getInstance().stampaDettagli();
+
             App.setRoot("home");
         }
     }

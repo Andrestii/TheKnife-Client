@@ -16,6 +16,14 @@ public class GuestController {
 
     @FXML
     private void onInviaClicked() throws IOException {
+        String luogo = posizioneField.getText();
+
+        SessioneUtente sessione = SessioneUtente.getInstance();
+        sessione.reset(); // pulisci tutto
+        sessione.setLuogo(luogo);
+        sessione.setRuolo(Ruolo.GUEST);
+        SessioneUtente.getInstance().stampaDettagli();
+
         App.setRoot("home");
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 public class HomeController {
 
     @FXML private TextField searchField;
+    @FXML private TextField positionField;
     @FXML private VBox filtersBox;
 
     // Campi filtri
@@ -28,6 +29,13 @@ public class HomeController {
 
     @FXML
     public void initialize() {
+         // Imposta il campo posizione in base ai dati salvati
+        String luogo = SessioneUtente.getInstance().getLuogo();
+        if (luogo != null && !luogo.isEmpty()) {
+            positionField.setText(luogo);
+        } else {
+            positionField.setText("Posizione");
+        }
         // Gruppi radio per le opzioni sì/no
         deliveryGroup = new ToggleGroup();
         prenotazioniGroup = new ToggleGroup();

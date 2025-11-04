@@ -29,8 +29,15 @@ public class LoginController {
         App.setRoot("welcome");
     }
 
+    // TODO: da completare con la logica di autenticazione lato server
     @FXML
     private void onInviaClicked() throws IOException {
+        // SessioneUtente sessione = SessioneUtente.getInstance();
+        // sessione.setUsername(usernameField.getText());
+        // sessione.setPassword(passwordField.getText());
+        // sessione.setRuolo(clienteRadio.isSelected() ? Ruolo.CLIENTE : Ruolo.RISTORATORE);
+        // SessioneUtente.getInstance().stampaDettagli();
+
         App.setRoot("home");
     }
 }
