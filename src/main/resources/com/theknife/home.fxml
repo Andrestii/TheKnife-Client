@@ -21,7 +21,8 @@
                         <Insets top="15" right="15" bottom="15" left="15"/>
                     </padding>
                     <ImageView fx:id="userIcon" fitWidth="40" fitHeight="40"
-                               pickOnBounds="true" preserveRatio="true">
+                               pickOnBounds="true" preserveRatio="true"
+                               onMouseClicked="#onUserIconClicked">
                         <image>
                             <Image url="@userIcon.png"/>
                         </image>
@@ -52,9 +53,8 @@
                 <!-- Barra di ricerca -->
                 <HBox spacing="0" alignment="CENTER">
 
-                    <!-- Campo Posizione -->
+                    <!-- Campo Posizione/Domicilio -->
                     <TextField fx:id="positionField"
-                               text="Posizione"
                                prefWidth="150" prefHeight="35"
                                style="-fx-font-size: 14px; -fx-border-color: rgb(47,98,84); -fx-border-width: 1;
                                       -fx-background-radius: 10 0 0 10; -fx-border-radius: 10 0 0 10;"/>
@@ -142,4 +142,5 @@
             </VBox>
         </VBox>
     </center>
+
 </BorderPane>

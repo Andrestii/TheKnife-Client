@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+
+<!-- StackPane per permettere l’overlay sopra la home -->
+<StackPane fx:id="menuOverlay"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.theknife.HomeController"
+           visible="false" managed="false"
+           prefWidth="800" prefHeight="600"
+           style="-fx-background-color: rgba(0, 0, 0, 0.3);">
+
+    <!-- VBox del menu laterale, ancorato a destra -->
+    <VBox fx:id="menuPane"
+          alignment="TOP_CENTER"
+          spacing="20"
+          prefWidth="250"
+          maxHeight="Infinity"
+          style="-fx-background-color: white;
+                 -fx-border-color: rgb(47,98,84);
+                 -fx-border-width: 2;"
+          StackPane.alignment="CENTER_RIGHT">
+
+        <!-- Pulsante di chiusura -->
+        <HBox alignment="TOP_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="0" left="10"/>
+            </padding>
+            <Button text="×"
+                    onAction="#onCloseMenu"
+                    style="-fx-font-size: 20px;
+                           -fx-background-color: transparent;
+                           -fx-text-fill: rgb(47,98,84);" />
+        </HBox>
+
+        <!-- Icona utente -->
+        <ImageView fx:id="menuUserIcon"
+                   fitWidth="80" fitHeight="80">
+            <image>
+                <Image url="@userIcon.png" />
+            </image>
+        </ImageView>
+
+        <!-- Nome utente -->
+        <Label fx:id="userNameLabel" text="Utente"
+               style="-fx-font-size: 18px;
+                      -fx-font-weight: bold;
+                      -fx-text-fill: rgb(47,98,84);" />
+
+        <!-- Box pulsanti dinamici -->
+        <VBox fx:id="menuButtonsBox"
+              spacing="10"
+              alignment="CENTER">
+            <padding>
+                <Insets top="10" right="0" bottom="20" left="0"/>
+            </padding>
+            <!-- Pulsanti aggiunti da HomeController -->
+        </VBox>
+    </VBox>
+
+</StackPane>

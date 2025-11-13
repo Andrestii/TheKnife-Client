@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.theknife.MenuClienteController"
+            prefWidth="800" prefHeight="600">
+
+    <!-- Parte sinistra: area offuscata -->
+    <!-- Overlay che copre tutta la finestra -->
+    <Rectangle fx:id="overlayArea"
+        fill="rgb(47,98,84)"
+        opacity="0.7"
+        onMouseClicked="#onOverlayClicked"
+        AnchorPane.topAnchor="0.0"
+        AnchorPane.bottomAnchor="0.0"
+        AnchorPane.leftAnchor="0.0"
+        AnchorPane.rightAnchor="320.0" />
+
+    <!-- Parte destra: menu ancorato a destra (responsive) -->
+    <VBox alignment="CENTER"
+        spacing="20"
+        prefWidth="320" prefHeight="600"
+        style="-fx-background-color: white;"
+        AnchorPane.topAnchor="0.0"
+        AnchorPane.bottomAnchor="0.0"
+        AnchorPane.rightAnchor="0.0">
+
+        <!-- Icona utente -->
+        <ImageView fitWidth="90" fitHeight="90">
+            <image>
+                <Image url="@clientIcon.png" />
+            </image>
+        </ImageView>
+
+        <!-- Nome utente -->
+        <Label fx:id="userNameLabel"
+               text="Nome Utente"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: rgb(47,98,84);" />
+
+        <!-- Pulsanti -->
+        <VBox alignment="CENTER" spacing="15">
+        <Button text="⚙ Impostazioni"
+            prefWidth="200"
+            onAction="#onImpostazioniClicked"
+            style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px;" />
+
+        <Button text="❤️ Preferiti"
+            prefWidth="200"
+            onAction="#onPreferitiClicked"
+            style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px;" />
+
+        <Button text="⭐ Recensioni"
+            prefWidth="200"
+            onAction="#onRecensioniClicked"
+            style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px;" />
+        
+        <Button text="⎋ Logout"
+            prefWidth="200"
+            onAction="#onLogoutClicked"
+            style="-fx-background-color: #d9534f;
+                   -fx-text-fill: white;
+                   -fx-background-radius: 20;
+                   -fx-font-size: 14px;
+                   -fx-font-weight: bold;" />
+        </VBox>
+    </VBox>
+</AnchorPane>

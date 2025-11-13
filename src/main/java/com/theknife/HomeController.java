@@ -2,7 +2,7 @@ package com.theknife;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 public class HomeController {
 
@@ -29,13 +29,14 @@ public class HomeController {
 
     @FXML
     public void initialize() {
-         // Imposta il campo posizione in base ai dati salvati
+        // Imposta il campo posizione in base ai dati salvati
         String luogo = SessioneUtente.getInstance().getLuogo();
         if (luogo != null && !luogo.isEmpty()) {
             positionField.setText(luogo);
         } else {
             positionField.setText("Posizione");
         }
+
         // Gruppi radio per le opzioni sì/no
         deliveryGroup = new ToggleGroup();
         prenotazioniGroup = new ToggleGroup();
@@ -69,20 +70,26 @@ public class HomeController {
         if (filtersBox != null) {
             boolean isVisible = filtersBox.isVisible();
             filtersBox.setVisible(!isVisible);
-            filtersBox.setManaged(!isVisible); // fa "collassare" lo spazio quando è nascosto
+            filtersBox.setManaged(!isVisible);
         }
     }
 
-    // (facoltativo, per quando avrai SessioneUtente)
-    /*
+    // Clic sull'icona utente → apre la schermata corretta in base al ruolo
     @FXML
-    private void onUserIconClicked() throws IOException {
-        var ruolo = SessioneUtente.getInstance().getRuolo();
-        switch (ruolo) {
-            case GUEST -> App.setRoot("welcome");
-            case CLIENTE -> App.setRoot("menuCliente");
-            case RISTORATORE -> App.setRoot("menuRistoratore");
+    private void onUserIconClicked() throws Exception {
+        SessioneUtente sessione = SessioneUtente.getInstance();
+        switch (sessione.getRuolo()) {
+            case GUEST:
+                App.setRoot("welcome");
+                break;
+            case CLIENTE:
+                App.setRoot("menuCliente");
+                break;
+            case RISTORATORE:
+                App.setRoot("menuRistoratore");
+                break;
+            default:
+                break;
         }
     }
-    */
 }
