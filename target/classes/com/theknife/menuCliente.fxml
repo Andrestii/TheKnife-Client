@@ -12,15 +12,13 @@
             prefWidth="800" prefHeight="600"
             stylesheets="@style.css" styleClass="colored-background">
 
-    <!-- SFONDO COLORATO a sinistra -->
-    <Rectangle fx:id="coloredBackground"
-               fill="rgb(47,98,84)"
-               opacity="1.0"
-               onMouseClicked="#onOverlayClicked"
-               AnchorPane.topAnchor="0.0"
-               AnchorPane.bottomAnchor="0.0"
-               AnchorPane.leftAnchor="0.0"
-               AnchorPane.rightAnchor="320.0" />
+    <!-- SFONDO COLORATO a sinistra - Button trasparente che cattura i click -->
+    <Button onAction="#onOverlayClicked"
+            style="-fx-background-color: rgba(47,98,84,0.7); -fx-border-width: 0; -fx-padding: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;"
+            AnchorPane.topAnchor="0.0"
+            AnchorPane.bottomAnchor="0.0"
+            AnchorPane.leftAnchor="0.0"
+            AnchorPane.rightAnchor="320.0" />
 
     <!-- MENU laterale a destra -->
     <VBox alignment="TOP_CENTER"
@@ -97,4 +95,5 @@
                            -fx-font-weight: bold;" />
         </VBox>
     </VBox>
+
 </AnchorPane>
