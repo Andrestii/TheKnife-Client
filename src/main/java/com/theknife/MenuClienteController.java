@@ -19,6 +19,11 @@ public class MenuClienteController {
     }
 
     @FXML
+    private void onCloseMenuClicked() throws Exception {
+        App.setRoot("home");
+    }
+
+    @FXML
     private void onImpostazioniClicked() {
         System.out.println("Impostazioni cliente");
     }

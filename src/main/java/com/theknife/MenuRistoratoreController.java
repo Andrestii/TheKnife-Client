@@ -2,7 +2,6 @@ package com.theknife;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 
 public class MenuRistoratoreController {
 
@@ -15,18 +14,23 @@ public class MenuRistoratoreController {
     }
 
     @FXML
-    private void onOverlayClicked(MouseEvent event) throws Exception {
+    private void onOverlayClicked() throws Exception {
+        App.setRoot("home");
+    }
+
+    @FXML
+    private void onCloseMenuClicked() throws Exception {
         App.setRoot("home");
     }
 
     @FXML
     private void onMieiRistorantiClicked() {
-        System.out.println("Apertura sezione 'I miei ristoranti'");
+        System.out.println("Apertura sezione: I miei ristoranti");
     }
 
     @FXML
     private void onImpostazioniClicked() {
-        System.out.println("Apertura sezione 'Impostazioni'");
+        System.out.println("Apertura sezione: Impostazioni ristoratore");
     }
 
     @FXML

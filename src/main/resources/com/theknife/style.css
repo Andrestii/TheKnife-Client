@@ -1,0 +1,9 @@
+/* Schermate con sfondo colorato */
+.colored-background {
+    -fx-background-color: rgb(47,98,84);
+}
+
+/* Schermate con sfondo bianco */
+.white-background {
+    -fx-background-color: white;
+}
