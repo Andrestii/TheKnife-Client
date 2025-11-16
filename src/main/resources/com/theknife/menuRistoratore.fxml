@@ -13,12 +13,26 @@
             stylesheets="@style.css" styleClass="colored-background">
 
     <!-- SFONDO COLORATO a sinistra - Button trasparente che cattura i click -->
-    <Button onAction="#onOverlayClicked"
-            style="-fx-background-color: rgba(47,98,84,0.7); -fx-border-width: 0; -fx-padding: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;"
-            AnchorPane.topAnchor="0.0"
-            AnchorPane.bottomAnchor="0.0"
-            AnchorPane.leftAnchor="0.0"
-            AnchorPane.rightAnchor="320.0" />
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="320">
+
+        <!-- Immagine sfondo -->
+        <ImageView fitWidth="1200" fitHeight="1600" preserveRatio="true">
+            <image>
+                <Image url="@screenHome.png" />
+            </image>
+        </ImageView>
+
+        <!-- Livello di oscuramento -->
+        <Rectangle width="1200" height="1600"
+                   fill="rgba(47,98,84,0.55)" />
+
+        <!-- Bottone invisibile per catturare click -->
+        <Button onAction="#onOverlayClicked"
+                style="-fx-background-color: transparent; -fx-border-width: 0;"
+                maxWidth="Infinity" maxHeight="Infinity" />
+
+    </StackPane>
 
     <!-- MENU laterale a destra -->
     <VBox alignment="TOP_CENTER"
