@@ -1,5 +1,7 @@
 package com.theknife;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -29,8 +31,8 @@ public class MenuRistoratoreController {
     }
 
     @FXML
-    private void onImpostazioniClicked() {
-        System.out.println("Apertura sezione: Impostazioni ristoratore");
+    private void onImpostazioniClicked() throws Exception {
+        App.setRoot("impostazioni");
     }
 
     @FXML

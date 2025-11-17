@@ -1,4 +1,5 @@
 com\theknife\App.class
+com\theknife\ImpostazioniClienteController.class
 com\theknife\HomeController.class
 com\theknife\MenuRistoratoreController.class
 com\theknife\Ruolo.class
