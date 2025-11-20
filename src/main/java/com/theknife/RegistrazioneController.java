@@ -108,7 +108,9 @@ public class RegistrazioneController {
             sessione.reset();
             sessione.setNome(nomeField.getText());
             sessione.setCognome(cognomeField.getText());
-            sessione.setDataNascita(dataNascitaField.getText());
+            // Gestione data di nascita (campo non obbligatorio)
+            String dataInput = dataNascitaField.getText();
+            sessione.setDataNascita((dataInput == null || dataInput.isBlank()) ? null : dataInput);
             sessione.setLuogo(domicilioField.getText());
             sessione.setUsername(usernameField.getText());
             sessione.setPassword(passwordField.getText());
@@ -157,7 +159,7 @@ public class RegistrazioneController {
     }
 
     private boolean validaData(String data) {
-        if (data == null || data.isEmpty()) return false;
+        if (data == null || data.isEmpty()) return true;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate parsed = LocalDate.parse(data, formatter);
