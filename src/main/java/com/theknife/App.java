@@ -1,12 +1,16 @@
 package com.theknife;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 /**
  * JavaFX App
@@ -17,8 +21,29 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("welcome"), 640, 480);
+        
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("welcome.fxml"));
+
+        scene = new Scene(fxmlLoader.load(), 640, 480);
+        stage.setTitle("TheKnife");
         stage.setScene(scene);
+
+        InetAddress addr = InetAddress.getByName(null);
+        System.out.println("addr = " + addr);
+        Socket socket = new Socket(addr, 2345);
+
+        try {
+            System.out.println("Client connected: socket = " + socket);
+            
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            WelcomeController controller = fxmlLoader.getController();
+            controller.setConnectionSocket(socket, in, out);
+        } catch (IOException e){
+
+        }
+
         stage.show();
     }
 

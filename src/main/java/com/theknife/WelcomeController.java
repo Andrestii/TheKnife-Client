@@ -1,14 +1,22 @@
 package com.theknife;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 public class WelcomeController {
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     @FXML private BorderPane rootPane;
     @FXML private VBox cardBox;
@@ -46,5 +54,11 @@ public class WelcomeController {
             // Optional minimum for usability
             cardBox.setMinWidth(200);
         }
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
     }
 }
