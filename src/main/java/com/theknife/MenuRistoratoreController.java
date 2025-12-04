@@ -24,8 +24,8 @@ public class MenuRistoratoreController {
     }
 
     @FXML
-    private void onMieiRistorantiClicked() {
-        System.out.println("Apertura sezione: I miei ristoranti");
+    private void onMieiRistorantiClicked() throws Exception {
+        App.setRoot("ristoranti");
     }
 
     @FXML

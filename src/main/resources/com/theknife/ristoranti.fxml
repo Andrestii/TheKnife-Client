@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.theknife.RistorantiController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: rgb(47,98,84);">
+
+    <!-- Pulsante INDIETRO -->
+    <top>
+        <HBox alignment="TOP_LEFT">
+            <padding>
+                <Insets top="15" left="15" bottom="15" right="15"/>
+            </padding>
+
+            <Button text="← Indietro" onAction="#onBackClicked"
+                    style="-fx-background-color: #d32f2f; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-background-radius: 8; -fx-padding: 6 18;
+                           -fx-border-color: #b71c1c; -fx-border-width: 2;
+                           -fx-border-radius: 8;"/>
+        </HBox>
+    </top>
+
+    <!-- Titolo centrale -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="30">
+            <Label text="I tuoi ristoranti"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+            <!-- Contenitore principale -->
+            <HBox alignment="TOP_CENTER" spacing="40">
+
+                <!-- Bottone CREA NUOVO RISTORANTE -->
+                <VBox alignment="CENTER" spacing="10">
+
+                    <Button fx:id="creaRistoranteButton"
+                            text="+"
+                            onAction="#onCreaRistoranteClicked"
+                            prefWidth="150" prefHeight="150"
+                            style="-fx-font-size: 48px; -fx-font-weight: bold;
+                                   -fx-background-radius: 12;
+                                   -fx-background-color: white;
+                                   -fx-text-fill: rgb(47,98,84);
+                                   -fx-border-color: rgb(47,98,84);
+                                   -fx-border-width: 3;
+                                   -fx-border-radius: 12;"/>
+
+                    <Label text="Crea nuovo ristorante"
+                           style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+                </VBox>
+
+                <!-- Lista ristoranti (vuota per ora) -->
+                <FlowPane fx:id="listaRistoranti"
+                          hgap="20" vgap="20"
+                          prefWrapLength="500"
+                          alignment="TOP_LEFT">
+                </FlowPane>
+
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
