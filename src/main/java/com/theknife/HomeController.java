@@ -1,8 +1,17 @@
 package com.theknife;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.VBox;
 
 public class HomeController {
 
@@ -26,6 +35,10 @@ public class HomeController {
 
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenotazioniGroup;
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     @FXML
     public void initialize() {
@@ -91,5 +104,11 @@ public class HomeController {
             default:
                 break;
         }
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
     }
 }
