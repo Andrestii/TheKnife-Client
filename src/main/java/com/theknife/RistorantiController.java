@@ -16,7 +16,7 @@ public class RistorantiController {
 
     @FXML
     private void onBackClicked() throws IOException {
-        App.setRoot("home");
+        App.setRoot("menuRistoratore");
     }
 
     @FXML
