@@ -1,9 +1,17 @@
 package com.theknife;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class MenuClienteController {
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     @FXML
     private Label userNameLabel;
@@ -26,7 +34,7 @@ public class MenuClienteController {
     @FXML
     private void onImpostazioniClicked() throws Exception {
         App.setRoot("impostazioni");
-   }
+    }
 
     @FXML
     private void onPreferitiClicked() {
@@ -43,5 +51,11 @@ public class MenuClienteController {
         System.out.println("Logout eseguito");
         SessioneUtente.getInstance().reset();
         App.setRoot("welcome");
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
     }
 }

@@ -14,14 +14,14 @@ import javafx.scene.layout.VBox;
 
 public class WelcomeController {
 
-    private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-
     @FXML private BorderPane rootPane;
     @FXML private VBox cardBox;
     @FXML private Label titleLabel;
     @FXML private VBox linksBox;
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     @FXML
     private void onRegisterClicked() throws IOException {

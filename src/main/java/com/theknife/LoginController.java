@@ -1,8 +1,15 @@
 package com.theknife;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
 public class LoginController {
 
@@ -12,6 +19,10 @@ public class LoginController {
     @FXML private RadioButton ristoratoreRadio;
 
     private ToggleGroup ruoloGroup;
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     // Serve a rendere mutuamente esclusivi i due RadioButton (“Cliente” o “Ristoratore”) 
     // e garantire che funzioni anche se l’FXML è parzialmente modificato o corrotto.
@@ -39,5 +50,11 @@ public class LoginController {
         // SessioneUtente.getInstance().stampaDettagli();
 
         App.setRoot("home");
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
     }
 }
