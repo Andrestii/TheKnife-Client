@@ -4,10 +4,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 public class MenuRistoratoreController {
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -22,30 +32,85 @@ public class MenuRistoratoreController {
     }
 
     @FXML
-    private void onOverlayClicked() throws Exception {
-        App.setRoot("home");
+    private void onOverlayClicked(ActionEvent e) throws Exception {
+        //App.setRoot("home");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
+        root = loader.load();
+
+        HomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onCloseMenuClicked() throws Exception {
-        App.setRoot("home");
+    private void onCloseMenuClicked(ActionEvent e) throws Exception {
+        //App.setRoot("home");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
+        root = loader.load();
+
+        HomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onMieiRistorantiClicked() throws Exception {
-        App.setRoot("ristoranti");
+    private void onMieiRistorantiClicked(ActionEvent e) throws Exception {
+        //App.setRoot("ristoranti");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+        root = loader.load();
+
+        RistorantiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onImpostazioniClicked() throws Exception {
-        App.setRoot("impostazioni");
+    private void onImpostazioniClicked(ActionEvent e) throws Exception {
+        //App.setRoot("impostazioni");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("impostazioni.fxml"));
+        root = loader.load();
+
+        ImpostazioniController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onLogoutClicked() throws Exception {
+    private void onLogoutClicked(ActionEvent e) throws Exception {
         System.out.println("Logout eseguito");
         SessioneUtente.getInstance().reset();
-        App.setRoot("welcome");
+        //App.setRoot("welcome");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+        root = loader.load();
+
+        WelcomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){

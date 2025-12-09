@@ -9,12 +9,18 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
 
 public class RegistrazioneController {
 
@@ -40,6 +46,10 @@ public class RegistrazioneController {
 
     private ToggleGroup ruoloGroup;
 
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -55,12 +65,23 @@ public class RegistrazioneController {
     }
 
     @FXML
-    private void onBackClicked() throws IOException {
-        App.setRoot("welcome");
+    private void onBackClicked(ActionEvent e) throws IOException {
+        //App.setRoot("welcome"); // Eliminare riga
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+        root = loader.load();
+
+        WelcomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onSubmitClicked() throws IOException {
+    private void onSubmitClicked(ActionEvent e) throws IOException {
         resetErrorLabels();
         resetFieldStyles();
 
@@ -129,7 +150,18 @@ public class RegistrazioneController {
             sessione.setRuolo(clienteRadio.isSelected() ? Ruolo.CLIENTE : Ruolo.RISTORATORE);
             SessioneUtente.getInstance().stampaDettagli();
 
-            App.setRoot("home");
+            //App.setRoot("home"); // Eliminare riga
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
+            root = loader.load();
+
+            HomeController controller = loader.getController();
+            controller.setConnectionSocket(socket, in, out);
+
+            stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
     }
 

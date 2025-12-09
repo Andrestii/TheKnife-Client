@@ -4,7 +4,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -12,6 +17,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class HomeController {
 
@@ -35,6 +41,10 @@ public class HomeController {
 
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenotazioniGroup;
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -89,17 +99,53 @@ public class HomeController {
 
     // Clic sull'icona utente → apre la schermata corretta in base al ruolo
     @FXML
-    private void onUserIconClicked() throws Exception {
+    private void onUserIconClicked(ActionEvent e) throws Exception {
         SessioneUtente sessione = SessioneUtente.getInstance();
+
+        FXMLLoader loader;
+
         switch (sessione.getRuolo()) {
             case GUEST:
-                App.setRoot("welcome");
+                //App.setRoot("welcome");
+                
+                loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+                root = loader.load();
+
+                WelcomeController controllerGuest = loader.getController();
+                controllerGuest.setConnectionSocket(socket, in, out);
+
+                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
                 break;
             case CLIENTE:
-                App.setRoot("menuCliente");
+                //App.setRoot("menuCliente");
+
+                loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
+                root = loader.load();
+
+                MenuClienteController controllerCliente = loader.getController();
+                controllerCliente.setConnectionSocket(socket, in, out);
+
+                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
                 break;
             case RISTORATORE:
-                App.setRoot("menuRistoratore");
+                //App.setRoot("menuRistoratore");
+
+                loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
+                root = loader.load();
+
+                MenuRistoratoreController controllerRistoratore = loader.getController();
+                controllerRistoratore.setConnectionSocket(socket, in, out);
+
+                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
                 break;
             default:
                 break;

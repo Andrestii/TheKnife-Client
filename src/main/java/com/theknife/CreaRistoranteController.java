@@ -1,10 +1,23 @@
 package com.theknife;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.event.ActionEvent;
-
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
 
 public class CreaRistoranteController {
 
@@ -34,6 +47,14 @@ public class CreaRistoranteController {
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenGroup;
 
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+
     @FXML
     public void initialize() {
         deliveryGroup = new ToggleGroup();
@@ -49,7 +70,18 @@ public class CreaRistoranteController {
 
     @FXML
     private void onBackClicked(ActionEvent event) throws IOException {
-        App.setRoot("ristoranti");
+        //App.setRoot("ristoranti"); // Eliminare riga
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+        root = loader.load();
+
+        RistorantiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -134,7 +166,17 @@ public class CreaRistoranteController {
         alert.showAndWait();
 
         // Torna alla schermata ristoranti.fxml
-        App.setRoot("ristoranti");
+        //App.setRoot("ristoranti"); // Eliminare riga
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+        root = loader.load();
+
+        RistorantiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     // --- FUNZIONI DI SUPPORTO ---
@@ -161,5 +203,11 @@ public class CreaRistoranteController {
 
     private void resetBorder(TextField field) {
         field.setStyle(""); // rimuove eventuali bordi precedenti
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
     }
 }

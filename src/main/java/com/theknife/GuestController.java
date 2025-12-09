@@ -5,10 +5,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class GuestController {
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -18,12 +28,30 @@ public class GuestController {
     private TextField posizioneField;
 
     @FXML
-    private void onBackClicked() throws IOException {
-        App.setRoot("welcome");
+    private void onBackClicked(ActionEvent e) throws IOException {
+        /*SessioneUtente sessione = SessioneUtente.getInstance();
+            sessione.setNome(posizioneField.getText());
+
+        System.out.println(socket);
+        SessioneUtente.getInstance().stampaDettagli();
+        */
+        
+        //App.setRoot("welcome"); // Eliminare riga
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+        root = loader.load();
+
+        WelcomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onInviaClicked() throws IOException {
+    private void onInviaClicked(ActionEvent e) throws IOException {
         String luogo = posizioneField.getText();
 
         SessioneUtente sessione = SessioneUtente.getInstance();
@@ -32,7 +60,18 @@ public class GuestController {
         sessione.setRuolo(Ruolo.GUEST);
         SessioneUtente.getInstance().stampaDettagli();
 
-        App.setRoot("home");
+        //App.setRoot("home"); // Eliminare riga
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
+        root = loader.load();
+
+        HomeController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){

@@ -5,12 +5,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
 public class RistorantiController {
 
     @FXML private FlowPane listaRistoranti;
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -23,13 +33,36 @@ public class RistorantiController {
     }
 
     @FXML
-    private void onBackClicked() throws IOException {
-        App.setRoot("menuRistoratore");
+    private void onBackClicked(ActionEvent e) throws IOException {
+        //App.setRoot("menuRistoratore");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
+        root = loader.load();
+
+        MenuRistoratoreController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    private void onCreaRistoranteClicked() throws IOException {
-        App.setRoot("creaRistorante");
+    private void onCreaRistoranteClicked(ActionEvent e) throws IOException {
+        //App.setRoot("creaRistorante");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("creaRistorante.fxml"));
+        root = loader.load();
+
+        CreaRistoranteController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
         // creerai poi la pagina creaRistorante.fxml
     }
 
