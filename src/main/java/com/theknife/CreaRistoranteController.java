@@ -79,9 +79,7 @@ public class CreaRistoranteController {
         controller.setConnectionSocket(socket, in, out);
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
@@ -174,9 +172,7 @@ public class CreaRistoranteController {
         controller.setConnectionSocket(socket, in, out);
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
     // --- FUNZIONI DI SUPPORTO ---

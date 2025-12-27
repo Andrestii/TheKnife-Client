@@ -43,9 +43,7 @@ public class RistorantiController {
         controller.setConnectionSocket(socket, in, out);
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
@@ -59,9 +57,7 @@ public class RistorantiController {
         controller.setConnectionSocket(socket, in, out);
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.getScene().setRoot(root);
 
         // creerai poi la pagina creaRistorante.fxml
     }

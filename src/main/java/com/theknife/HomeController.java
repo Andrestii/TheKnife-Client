@@ -4,7 +4,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -16,6 +15,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -99,7 +99,7 @@ public class HomeController {
 
     // Clic sull'icona utente → apre la schermata corretta in base al ruolo
     @FXML
-    private void onUserIconClicked(ActionEvent e) throws Exception {
+    private void onUserIconClicked(MouseEvent e) throws Exception {
         SessioneUtente sessione = SessioneUtente.getInstance();
 
         FXMLLoader loader;
@@ -115,9 +115,7 @@ public class HomeController {
                 controllerGuest.setConnectionSocket(socket, in, out);
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
             case CLIENTE:
                 //App.setRoot("menuCliente");
@@ -129,9 +127,7 @@ public class HomeController {
                 controllerCliente.setConnectionSocket(socket, in, out);
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
             case RISTORATORE:
                 //App.setRoot("menuRistoratore");
@@ -143,9 +139,7 @@ public class HomeController {
                 controllerRistoratore.setConnectionSocket(socket, in, out);
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
             default:
                 break;

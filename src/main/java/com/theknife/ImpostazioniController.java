@@ -161,9 +161,7 @@ public class ImpostazioniController {
                 controllerCliente.setConnectionSocket(socket, in, out);
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
 
             case RISTORATORE:
@@ -176,9 +174,7 @@ public class ImpostazioniController {
                 controllerRistoratore.setConnectionSocket(socket, in, out);
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
 
             default:
@@ -191,9 +187,7 @@ public class ImpostazioniController {
                 controller.setConnectionSocket(socket, in, out);
                 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                stage.getScene().setRoot(root);
                 break;
         }
     }
