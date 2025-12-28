@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
@@ -177,11 +178,25 @@ public class RegistrazioneController {
 
             }
             else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Errore di registrazione");
-            alert.setHeaderText("Registrazione non riuscita");
-            alert.setContentText("Ritorno alla home...");
-            alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore di registrazione");
+                alert.setHeaderText("Registrazione non riuscita");
+                alert.setContentText("Ritorno alla home...");
+                alert.showAndWait();
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+                    Parent root = loader.load();
+
+                    WelcomeController controller = loader.getController();
+                    controller.setConnectionSocket(socket, in, out);
+
+                    Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                    stage.getScene().setRoot(root);
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
