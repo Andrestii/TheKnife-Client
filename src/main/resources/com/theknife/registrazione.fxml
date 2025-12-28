@@ -59,7 +59,7 @@
 
                     <!-- Data di nascita -->
                     <Label text="Data di nascita" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextField fx:id="dataNascitaField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="dd/mm/yyyy"/>
+                    <TextField fx:id="dataNascitaField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="yyyy-MM-dd"/>
                     <Label fx:id="dataError" textFill="red" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
                     <!-- Domicilio -->

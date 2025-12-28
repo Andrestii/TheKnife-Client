@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
@@ -47,7 +47,6 @@ public class RegistrazioneController {
     private ToggleGroup ruoloGroup;
 
     private Stage stage;
-    private Scene scene;
     private Parent root;
 
     private Socket socket;
@@ -66,8 +65,6 @@ public class RegistrazioneController {
 
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
-        //App.setRoot("welcome"); // Eliminare riga
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
         root = loader.load();
 
@@ -148,16 +145,44 @@ public class RegistrazioneController {
             sessione.setRuolo(clienteRadio.isSelected() ? Ruolo.CLIENTE : Ruolo.RISTORATORE);
             SessioneUtente.getInstance().stampaDettagli();
 
-            //App.setRoot("home"); // Eliminare riga
+            // Inserisco dati nel db
+            out.writeObject("registerUser");
+            out.writeObject(sessione.getNome());
+            out.writeObject(sessione.getCognome());
+            out.writeObject(sessione.getUsername());
+            out.writeObject(sessione.getPassword());
+            out.writeObject(sessione.getDataNascita());
+            out.writeObject(sessione.getLuogo());
+            out.writeObject(sessione.getRuolo().toString());
+            out.flush();
+
+            // Controllo se la registrazione è andata a buon fine e cambio schermata
+            ServerResponse response;
+            try {
+                response = (ServerResponse) in.readObject();
+            } catch (ClassNotFoundException ex) {
+                throw new IOException("Risposta del server non valida", ex);
+            }  
+            
+            if (response.status.equals("OK")) {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
-            root = loader.load();
+            Parent root = loader.load();
 
             HomeController controller = loader.getController();
             controller.setConnectionSocket(socket, in, out);
 
-            stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
+
+            }
+            else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore di registrazione");
+            alert.setHeaderText("Registrazione non riuscita");
+            alert.setContentText("Ritorno alla home...");
+            alert.showAndWait();
+            }
         }
     }
 
@@ -201,7 +226,7 @@ public class RegistrazioneController {
     private boolean validaData(String data) {
         if (data == null || data.isEmpty()) return true;
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsed = LocalDate.parse(data, formatter);
             return !parsed.isAfter(LocalDate.now());
         } catch (DateTimeParseException e) {

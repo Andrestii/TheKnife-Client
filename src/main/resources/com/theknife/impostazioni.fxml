@@ -59,7 +59,7 @@
                     <!-- Data di nascita -->
                     <HBox alignment="CENTER_LEFT" spacing="12">
                         <Label text="Data di nascita:" minWidth="140" />
-                        <TextField fx:id="dataNascitaField" prefWidth="380" promptText="dd/mm/yyyy"/>
+                        <TextField fx:id="dataNascitaField" prefWidth="380" promptText="yyyy-MM-dd"/>
                     </HBox>
                     <Label fx:id="dataError" textFill="red" />
 
