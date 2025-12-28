@@ -44,7 +44,7 @@ public class LoginController {
         SessioneUtente sessione = SessioneUtente.getInstance();
         sessione.setUsername(usernameField.getText());
         sessione.setPassword(passwordField.getText());
-        SessioneUtente.getInstance().stampaDettagli();
+        sessione.stampaDettagli();
 
         // Inserisco dati nel db
         out.writeObject("login");
@@ -82,7 +82,7 @@ public class LoginController {
             } else {
                 sessione.setRuolo(Ruolo.CLIENTE);
             }
-            SessioneUtente.getInstance().stampaDettagli();
+            sessione.stampaDettagli();
 
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));

@@ -1,5 +1,6 @@
 package com.theknife;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -13,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -32,7 +32,6 @@ public class ImpostazioniController {
     @FXML private TextField passwordField;
     @FXML private ImageView userIcon;
 
-    // Label di errore sotto ogni campo
     @FXML private Label nomeError;
     @FXML private Label cognomeError;
     @FXML private Label dataError;
@@ -41,9 +40,7 @@ public class ImpostazioniController {
     @FXML private Label passwordError;
 
     private Stage stage;
-    private Scene scene;
     private Parent root;
-
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -62,7 +59,10 @@ public class ImpostazioniController {
 
         nomeField.setText(sessione.getNome());
         cognomeField.setText(sessione.getCognome());
-        dataNascitaField.setText(sessione.getDataNascita());
+        if(sessione.getDataNascita() == null || sessione.getDataNascita().isEmpty() || sessione.getDataNascita().equals("null"))
+            dataNascitaField.setText("");
+        else
+            dataNascitaField.setText(sessione.getDataNascita());
         domicilioField.setText(sessione.getLuogo());
         usernameField.setText(sessione.getUsername());
         passwordField.setText(sessione.getPassword());
@@ -72,7 +72,7 @@ public class ImpostazioniController {
     }
 
     @FXML
-    private void onConfermaClicked() throws Exception {
+    private void onConfermaClicked(ActionEvent e) throws Exception {
         resetErrorLabels();
         resetFieldStyles();
 
@@ -110,35 +110,73 @@ public class ImpostazioniController {
 
         // Password
         String password = passwordField.getText();
-
         if (!validaPassword(password)) {
             mostraErroreCampo(passwordField, passwordError, "Password troppo debole");
             valido = false;
         }
 
-        // Se tutto valido → aggiorni sessione
+        // Se tutto valido aggiorno la sessione
         if (valido) {
-            SessioneUtente sessione = SessioneUtente.getInstance();
-
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Conferma modifiche");
             alert.setHeaderText("Confermi le modifiche ai tuoi dati?");
             alert.setContentText("Le informazioni verranno aggiornate.");
 
+            SessioneUtente sessione = SessioneUtente.getInstance();
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                sessione.setNome(nomeField.getText());
-                sessione.setCognome(cognomeField.getText());
-                String dataInput = dataNascitaField.getText();
-                sessione.setDataNascita((dataInput == null || dataInput.isBlank()) ? null : dataInput);            sessione.setLuogo(domicilioField.getText());
-                sessione.setUsername(usernameField.getText());
-                sessione.setPassword(passwordField.getText());
+                out.writeObject("updateUserInfo");
+                out.writeObject(sessione.getUsername());    // username attuale (chiave)
+                out.writeObject(nomeField.getText());
+                out.writeObject(cognomeField.getText());
+                out.writeObject(dataNascitaField.getText());
+                out.writeObject(domicilioField.getText());
+                out.writeObject(usernameField.getText());   // eventuale nuovo username
+                out.writeObject(passwordField.getText());
+                out.flush();
 
-                Alert ok = new Alert(Alert.AlertType.INFORMATION);
-                ok.setTitle("Successo");
-                ok.setHeaderText("Dati aggiornati con successo!");
-                ok.show();
+                // Controllo se l'operazione è andata a buon fine e cambio schermata
+                ServerResponse response;
+                try {
+                    response = (ServerResponse) in.readObject();
+                } catch (ClassNotFoundException ex) {
+                    throw new IOException("Risposta del server non valida", ex);
+                }
 
-                SessioneUtente.getInstance().stampaDettagli();
+                if (response.status.equals("OK")) {
+                    Alert ok = new Alert(Alert.AlertType.INFORMATION);
+                    ok.setTitle("Successo");
+                    ok.setHeaderText("Dati aggiornati con successo!");
+                    ok.setContentText("Ritorno alla home...");
+                    ok.showAndWait();
+                    // Aggiorno i dati nella sessione
+                    sessione.setNome(nomeField.getText());
+                    sessione.setCognome(cognomeField.getText());
+                    sessione.setDataNascita(dataNascitaField.getText());
+                    sessione.setLuogo(domicilioField.getText());
+                    sessione.setUsername(usernameField.getText());
+                    sessione.setPassword(passwordField.getText());
+                    sessione.stampaDettagli();
+ 
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+                        Parent root = loader.load();
+
+                        WelcomeController controller = loader.getController();
+                        controller.setConnectionSocket(socket, in, out);
+
+                        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                        stage.getScene().setRoot(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                else {
+                    Alert error = new Alert(Alert.AlertType.ERROR);
+                    error.setTitle("Errore");
+                    error.setHeaderText("Impossibile aggiornare i dati");
+                    error.setContentText("Qualcosa è andato storto. Riprova più tardi.");
+                    error.show();
+                }
             }
         }
     }

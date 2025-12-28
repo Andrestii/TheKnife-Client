@@ -130,7 +130,7 @@ public class RegistrazioneController {
             valido = false;
         }
 
-        // Se tutto valido
+        // Se tutto valido aggiorno la sessione
         if (valido) {
             SessioneUtente sessione = SessioneUtente.getInstance();
             sessione.reset();
@@ -143,7 +143,7 @@ public class RegistrazioneController {
             sessione.setUsername(usernameField.getText());
             sessione.setPassword(passwordField.getText());
             sessione.setRuolo(clienteRadio.isSelected() ? Ruolo.CLIENTE : Ruolo.RISTORATORE);
-            SessioneUtente.getInstance().stampaDettagli();
+            sessione.stampaDettagli();
 
             // Inserisco dati nel db
             out.writeObject("registerUser");
