@@ -45,10 +45,8 @@ public class RegistrazioneController {
     @FXML private Label ruoloError;
 
     private ToggleGroup ruoloGroup;
-
     private Stage stage;
     private Parent root;
-
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
