@@ -144,7 +144,6 @@ public class RistorantiController {
         img.setFitHeight(90);
         img.setPreserveRatio(true);
 
-        // colorato (?)
         StackPane imgBox = new StackPane(img);
         imgBox.setPrefSize(110, 90);
         imgBox.setMaxSize(110, 90);
@@ -163,13 +162,25 @@ public class RistorantiController {
         nome.setAlignment(Pos.CENTER);
         nome.setStyle("-fx-text-fill: rgb(47,98,84); -fx-font-weight: bold; -fx-font-size: 14px;");
 
-        // Click (poi ci attacchi la pagina dettaglio)
-        tile.setOnMouseClicked(ev -> {
-            System.out.println("[CLIENT] Cliccato ristorante: " + r.getId() + " - " + r.getNome());
-            // TODO: aprirai la schermata dettaglio ristorante
-        });
-
         tile.getChildren().addAll(imgBox, nome);
+
+        tile.setOnMouseClicked(ev -> {
+            try {
+                System.out.println("[CLIENT] Cliccato ristorante: " + r.getId() + " - " + r.getNome());
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("editRistorante.fxml"));
+                Parent root = loader.load();
+
+                EditRistoranteController controller = loader.getController();
+                controller.setConnectionSocket(socket, in, out);
+                // controller.setRistorante(r); // 👈 PASSAGGIO CHIAVE perchè dico a EditRistoranteController quale ristorante modificare
+
+                Stage stage = (Stage) tile.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         return tile;
     }
 }

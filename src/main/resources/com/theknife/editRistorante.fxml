@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.theknife.CreaRistoranteController"
+            fx:controller="com.theknife.EditRistoranteController"
             prefWidth="800" prefHeight="600"
             style="-fx-background-color: rgb(47,98,84);">
 
@@ -29,13 +29,13 @@
     <center>
         <VBox alignment="CENTER" spacing="15" maxWidth="700">
 
-            <!-- CARD BIANCA CON TITOLO E CAMPI -->
+            <!-- CARD BIANCA -->
             <VBox spacing="15"
                   style="-fx-background-color: white; -fx-background-radius: 18;
                          -fx-padding: 20;"
                   prefWidth="700" maxWidth="700">
 
-                <!-- LOGO IN ALTO AL CENTRO -->
+                <!-- LOGO -->
                 <HBox alignment="CENTER">
                     <ImageView fitWidth="80" fitHeight="80" preserveRatio="true">
                         <image>
@@ -44,17 +44,25 @@
                     </ImageView>
                 </HBox>
 
-                <!-- TITOLO IN ALTO AL CENTRO DELLA CARD -->
+                <!-- TITOLO -->
                 <HBox alignment="CENTER">
-                    <Label text="Inserisci i dati del tuo ristorante"
+                    <Label text="Modifica ristorante"
                            alignment="CENTER"
                            style="-fx-font-size: 24px; -fx-font-weight: bold;
                                   -fx-text-fill: rgb(47,98,84);" />
                 </HBox>
 
+                <!-- (OPZIONALE) info ristorante -->
+                <HBox alignment="CENTER">
+                    <Label fx:id="infoLabel"
+                           text=""
+                           style="-fx-text-fill: #666; -fx-font-size: 12px;"/>
+                </HBox>
+
+                <!-- CAMPI TOP (come creazione) -->
                 <VBox spacing="12" alignment="CENTER">
 
-                    <!-- RIGA 1: Nome - Nazione - Città -->
+                    <!-- RIGA 1 -->
                     <HBox spacing="25" alignment="TOP_CENTER">
 
                         <VBox spacing="6" prefWidth="200">
@@ -77,7 +85,7 @@
 
                     </HBox>
 
-                    <!-- RIGA 2: Indirizzo - Latitudine - Longitudine -->
+                    <!-- RIGA 2 -->
                     <HBox spacing="25" alignment="TOP_CENTER">
 
                         <VBox spacing="6" prefWidth="200">
@@ -97,66 +105,65 @@
                             <TextField fx:id="longitudineField" prefWidth="200"/>
                             <Label fx:id="longitudineError" textFill="red" style="-fx-font-size: 10px;"/>
                         </VBox>
-                    </HBox>
 
-                    <!-- RIGA 3: Cucina (sx) - Prenotazioni+Delivery (centro) - Prezzo (dx) -->
-                    <HBox spacing="25" alignment="TOP_CENTER">
-
-                        <!-- SINISTRA: Tipologia di cucina -->
-                        <VBox spacing="6" prefWidth="200">
-                            <Label text="Tipologia di cucina *" style="-fx-font-weight: bold;"/>
-                            <CheckBox fx:id="italianaCheck" text="Italiana"/>
-                            <CheckBox fx:id="hamburgerCheck" text="Hamburger"/>
-                            <CheckBox fx:id="asiaticaCheck" text="Asiatica"/>
-                            <CheckBox fx:id="sudamericanaCheck" text="Sudamericana"/>
-                            <Label fx:id="cucinaError" textFill="red" style="-fx-font-size: 10px;"/>
-                        </VBox>
-
-                        <!-- CENTRO: Prenotazioni sopra, Delivery sotto -->
-                        <VBox spacing="12" prefWidth="200">
-
-                            <!-- Prenotazioni -->
-                            <VBox spacing="4">
-                                <Label text="Prenotazioni *" style="-fx-font-weight: bold;"/>
-                                <HBox spacing="15">
-                                    <RadioButton fx:id="prenotazioneSi" text="Sì"/>
-                                    <RadioButton fx:id="prenotazioneNo" text="No"/>
-                                </HBox>
-                            </VBox>
-                            <Label fx:id="prenotazioneError" textFill="red" style="-fx-font-size: 10px;"/>
-
-                            <!-- Delivery -->
-                            <VBox spacing="4">
-                                <Label text="Delivery *" style="-fx-font-weight: bold;"/>
-                                <HBox spacing="15">
-                                    <RadioButton fx:id="deliverySi" text="Sì"/>
-                                    <RadioButton fx:id="deliveryNo" text="No"/>
-                                </HBox>
-                            </VBox>
-                            <Label fx:id="deliveryError" textFill="red" style="-fx-font-size: 10px;"/>
-
-                        </VBox>
-
-                        <VBox spacing="12">
-                            <!-- DESTRA: Prezzo -->
-                            <VBox spacing="6" prefWidth="200">
-                                <Label text="Prezzo *" style="-fx-font-weight: bold;"/>
-                                <TextField fx:id="prezzoField" prefWidth="200"/>
-                                <Label fx:id="prezzoError" textFill="red" style="-fx-font-size: 10px;"/>
-                            </VBox>
-                            
-                            <!-- BOTTONE CREA in basso a destra -->
-                            <VBox spacing="6" prefWidth="200">
-                                <Button text="Crea"
-                                onAction="#onCreaClicked"
-                                style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white;
-                                    -fx-font-size: 16px; -fx-font-weight: bold;
-                                    -fx-background-radius: 10;
-                                    -fx-padding: 10 30;" />
-                            </VBox>
-                        </VBox>
                     </HBox>
                 </VBox>
+
+                <!-- RIGA BOTTOM: cucina a sinistra, pren+del al centro, prezzo a destra -->
+                <HBox spacing="25" alignment="TOP_CENTER">
+
+                    <!-- SINISTRA: Tipologia di cucina -->
+                    <VBox spacing="6" prefWidth="200">
+                        <Label text="Tipologia di cucina *" style="-fx-font-weight: bold;"/>
+                        <CheckBox fx:id="italianaCheck" text="Italiana"/>
+                        <CheckBox fx:id="hamburgerCheck" text="Hamburger"/>
+                        <CheckBox fx:id="asiaticaCheck" text="Asiatica"/>
+                        <CheckBox fx:id="sudamericanaCheck" text="Sudamericana"/>
+                        <Label fx:id="cucinaError" textFill="red" style="-fx-font-size: 10px;"/>
+                    </VBox>
+
+                    <!-- CENTRO: Prenotazioni sopra, Delivery sotto -->
+                    <VBox spacing="12" prefWidth="200">
+
+                        <VBox spacing="4">
+                            <Label text="Prenotazioni *" style="-fx-font-weight: bold;"/>
+                            <HBox spacing="15">
+                                <RadioButton fx:id="prenotazioneSi" text="Sì"/>
+                                <RadioButton fx:id="prenotazioneNo" text="No"/>
+                            </HBox>
+                        </VBox>
+                        <Label fx:id="prenotazioneError" textFill="red" style="-fx-font-size: 10px;"/>
+
+                        <VBox spacing="4">
+                            <Label text="Delivery *" style="-fx-font-weight: bold;"/>
+                            <HBox spacing="15">
+                                <RadioButton fx:id="deliverySi" text="Sì"/>
+                                <RadioButton fx:id="deliveryNo" text="No"/>
+                            </HBox>
+                        </VBox>
+                        <Label fx:id="deliveryError" textFill="red" style="-fx-font-size: 10px;"/>
+
+                    </VBox>
+
+                    <!-- DESTRA: Prezzo + bottone salva sotto -->
+                    <VBox spacing="12" prefWidth="200">
+
+                        <VBox spacing="6">
+                            <Label text="Prezzo *" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="prezzoField" prefWidth="200"/>
+                            <Label fx:id="prezzoError" textFill="red" style="-fx-font-size: 10px;"/>
+                        </VBox>
+
+                        <HBox alignment="BOTTOM_RIGHT">
+                            <Button text="Salva"
+                                    onAction="#onSalvaClicked"
+                                    style="-fx-background-color: rgb(47,98,84); -fx-text-fill: white;
+                                           -fx-font-size: 16px; -fx-font-weight: bold;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 30;" />
+                        </HBox>
+                    </VBox>
+                </HBox>
             </VBox>
         </VBox>
     </center>

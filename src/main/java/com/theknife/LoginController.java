@@ -62,7 +62,6 @@ public class LoginController {
             
         if (response.status.equals("OK")) {
             // Aggiorno la sessione con i dati ricevuti
-            System.out.println(response.getPayload().toString());
             Utente user = new Utente(
                 response.getPayload().toString().split(";")[0],
                 response.getPayload().toString().split(";")[1],
