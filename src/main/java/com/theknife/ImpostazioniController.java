@@ -158,10 +158,10 @@ public class ImpostazioniController {
                     sessione.stampaDettagli();
  
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
                         Parent root = loader.load();
 
-                        WelcomeController controller = loader.getController();
+                        MenuClienteController controller = loader.getController();
                         controller.setConnectionSocket(socket, in, out);
 
                         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();

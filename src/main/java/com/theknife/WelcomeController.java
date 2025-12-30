@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -26,17 +25,13 @@ public class WelcomeController {
     @FXML private VBox linksBox;
 
     private Stage stage;
-    private Scene scene;
     private Parent root;
-
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
     @FXML
     private void onRegisterClicked(ActionEvent e) throws IOException {
-        //App.setRoot("registrazione"); // Eliminare riga
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("registrazione.fxml"));
         root = loader.load();
 
@@ -50,7 +45,6 @@ public class WelcomeController {
     @FXML
     private void onLoginClicked(ActionEvent e) throws IOException {
         System.out.println(socket); // Per testare se il socket è passato correttamente
-        //App.setRoot("login"); // Eliminare riga
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
         root = loader.load();
@@ -64,8 +58,6 @@ public class WelcomeController {
 
     @FXML
     private void onGuestClicked(ActionEvent e) throws IOException {
-        //App.setRoot("guest"); // Eliminare riga
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("guest.fxml"));
         root = loader.load();
 
@@ -78,7 +70,6 @@ public class WelcomeController {
 
     @FXML
     public void initialize() {
-        // Make the white card size to its content instead of stretching full-width.
         if (cardBox != null) {
             // Prevent VBox from forcing the card to grow
             VBox.setVgrow(cardBox, Priority.NEVER);
