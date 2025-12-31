@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +19,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 public class EditRistoranteController {
-
-    // --- CAMPI ---
     @FXML private TextField nomeField;
     @FXML private TextField nazioneField;
     @FXML private TextField cittaField;
@@ -29,7 +27,6 @@ public class EditRistoranteController {
     @FXML private TextField longitudineField;
     @FXML private TextField prezzoField;
 
-    // --- ERRORI ---
     @FXML private Label infoLabel;
     @FXML private Label nomeError;
     @FXML private Label nazioneError;
@@ -42,13 +39,11 @@ public class EditRistoranteController {
     @FXML private Label prenotazioneError;
     @FXML private Label deliveryError;
 
-    // --- CHECKBOX CUCINA ---
     @FXML private CheckBox italianaCheck;
     @FXML private CheckBox hamburgerCheck;
     @FXML private CheckBox asiaticaCheck;
     @FXML private CheckBox sudamericanaCheck;
 
-    // --- RADIO PRENOTAZIONI / DELIVERY ---
     @FXML private RadioButton prenotazioneSi;
     @FXML private RadioButton prenotazioneNo;
     @FXML private RadioButton deliverySi;
@@ -56,28 +51,25 @@ public class EditRistoranteController {
 
     private ToggleGroup prenGroup;
     private ToggleGroup deliveryGroup;
-
-    // --- NAV / CONNESSIONE ---
     private Stage stage;
     private Parent root;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private Ristorante ristorante;
 
     @FXML
     public void initialize() {
-        // ToggleGroup Prenotazioni
         prenGroup = new ToggleGroup();
         if (prenotazioneSi != null) prenotazioneSi.setToggleGroup(prenGroup);
         if (prenotazioneNo != null) prenotazioneNo.setToggleGroup(prenGroup);
 
-        // ToggleGroup Delivery
         deliveryGroup = new ToggleGroup();
         if (deliverySi != null) deliverySi.setToggleGroup(deliveryGroup);
         if (deliveryNo != null) deliveryNo.setToggleGroup(deliveryGroup);
 
         clearErrors();
-        if (infoLabel != null) infoLabel.setText(""); // opzionale
+        populateFieldsIfReady();
     }
 
     @FXML
@@ -93,16 +85,171 @@ public class EditRistoranteController {
     }
 
     @FXML
-    private void onSalvaClicked(ActionEvent event) {
-        // Basico: niente server ancora
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Modifica Ristorante");
-        alert.setHeaderText("Salvataggio non ancora implementato");
-        alert.setContentText("Qui poi invieremo i dati al server (updateRestaurant).");
-        alert.showAndWait();
+    private void onSalvaClicked(ActionEvent event) throws IOException {
+        clearErrors();
+        boolean valid = true;
+
+        if (ristorante == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore");
+            alert.setHeaderText("Ristorante non selezionato");
+            alert.setContentText("Torna indietro e seleziona un ristorante.");
+            alert.showAndWait();
+            return;
+        }
+
+        String nome = nomeField.getText().trim();
+        String nazione = nazioneField.getText().trim();
+        String citta = cittaField.getText().trim();
+        String indirizzo = indirizzoField.getText().trim();
+        String latStr = latitudineField.getText().trim();
+        String lonStr = longitudineField.getText().trim();
+        String prezzoStr = prezzoField.getText().trim();
+        boolean cucinaSelezionata =
+                italianaCheck.isSelected() ||
+                hamburgerCheck.isSelected() ||
+                asiaticaCheck.isSelected() ||
+                sudamericanaCheck.isSelected();
+
+        RadioButton deliverySelected = (RadioButton) deliveryGroup.getSelectedToggle();
+        RadioButton prenSelected = (RadioButton) prenGroup.getSelectedToggle();
+
+        if (nome.isEmpty()) {
+            setError(nomeField, nomeError, "Inserisci un nome valido");
+            valid = false;
+        }
+
+        if (nazione.isEmpty() || nazione.length() < 2) {
+            setError(nazioneField, nazioneError, "Inserisci una nazione valida");
+            valid = false;
+        }
+
+        if (citta.isEmpty()) {
+            setError(cittaField, cittaError, "Inserisci una città valida");
+            valid = false;
+        }
+
+        if (indirizzo.isEmpty()) {
+            setError(indirizzoField, indirizzoError, "Inserisci un indirizzo valido");
+            valid = false;
+        }
+
+        Double lat = parseDoubleOrNull(latStr);
+        if (lat == null || lat < -90 || lat > 90) {
+            setError(latitudineField, latitudineError, "Latitudine non valida (-90 a 90)");
+            valid = false;
+        }
+
+        Double lon = parseDoubleOrNull(lonStr);
+        if (lon == null || lon < -180 || lon > 180) {
+            setError(longitudineField, longitudineError, "Longitudine non valida (-180 a 180)");
+            valid = false;
+        }
+
+        if (!cucinaSelezionata) {
+            cucinaError.setText("Seleziona almeno una tipologia di cucina");
+            valid = false;
+        }
+
+        if (deliverySelected == null) {
+            deliveryError.setText("Seleziona una opzione");
+            valid = false;
+        }
+
+        if (prenSelected == null) {
+            prenotazioneError.setText("Seleziona una opzione");
+            valid = false;
+        }
+
+        if (prezzoStr.isEmpty() || !prezzoStr.matches("\\d+")) {
+            setError(prezzoField, prezzoError, "Inserisci un prezzo valido (solo intero, es. 15)");
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        boolean delivery = deliverySelected == deliverySi;
+        boolean pren = prenSelected == prenotazioneSi;
+        String tipoCucina = buildTipologiaCucina();
+        int prezzo = Integer.parseInt(prezzoStr);
+
+        out.writeObject("updateRestaurant");
+        out.writeObject(ristorante.getId());
+        out.writeObject(nome);
+        out.writeObject(nazione);
+        out.writeObject(citta);
+        out.writeObject(indirizzo);
+        out.writeObject(lat);        
+        out.writeObject(lon);        
+        out.writeObject(delivery);   
+        out.writeObject(pren);       
+        out.writeObject(tipoCucina);
+        out.writeObject(prezzo);     
+        out.flush();
+
+        ServerResponse response;
+        try {
+            response = (ServerResponse) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            throw new IOException("Risposta del server non valida", ex);
+        }
+
+        if ("OK".equals(response.status)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Modifica dati del ristorante");
+            alert.setHeaderText("Dati del ristorante modificati con successo!");
+            alert.showAndWait();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+            root = loader.load();
+
+            RistorantiController controller = loader.getController();
+            controller.setConnectionSocket(socket, in, out);
+
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore di modifica del ristorante");
+            alert.setHeaderText("Modifica dei dati del ristorante non riuscita");
+            alert.setContentText(response.getPayload() != null ? response.getPayload().toString() : "Riprova più tardi...");
+            alert.showAndWait();
+        }
     }
 
-    // --- SUPPORTO ---
+    // --- UTIL ---
+
+    private void setError(TextField field, Label label, String message) {
+        if (label != null) label.setText(message);
+        if (field != null) field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+    }
+
+    private void resetBorder(TextField field) {
+        if (field != null) field.setStyle("");
+    }
+
+    private Double parseDoubleOrNull(String s) {
+        if (s == null || s.isBlank()) return null;
+        try {
+            String normalized = s.replace(",", ".");
+            return Double.parseDouble(normalized);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    private String buildTipologiaCucina() {
+        StringBuilder sb = new StringBuilder();
+
+        if (italianaCheck.isSelected()) sb.append("italiana;");
+        if (hamburgerCheck.isSelected()) sb.append("hamburger;");
+        if (asiaticaCheck.isSelected()) sb.append("asiatica;");
+        if (sudamericanaCheck.isSelected()) sb.append("sudamericana;");
+
+        if (sb.length() > 0) sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+
     private void clearErrors() {
         if (nomeError != null) nomeError.setText("");
         if (nazioneError != null) nazioneError.setText("");
@@ -124,11 +271,67 @@ public class EditRistoranteController {
         resetBorder(prezzoField);
     }
 
-    private void resetBorder(TextField field) {
-        if (field != null) field.setStyle("");
+    public void setRistorante(Ristorante r) {
+        this.ristorante = r;
+        populateFieldsIfReady();
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    private void populateFieldsIfReady() {
+        if (nomeField == null) return;
+        if (ristorante == null) return;
+
+        Platform.runLater(() -> {
+            nomeField.setText(compilaCampo(ristorante.getNome()));
+            nazioneField.setText(compilaCampo(ristorante.getNazione()));
+            cittaField.setText(compilaCampo(ristorante.getCitta()));
+            indirizzoField.setText(compilaCampo(ristorante.getIndirizzo()));
+            latitudineField.setText(Double.toString(ristorante.getLat()));
+            longitudineField.setText(Double.toString(ristorante.getLon()));
+            prezzoField.setText(Integer.toString((int) ristorante.getPrezzo())); // se prezzo è double cambia
+
+            // Tipo cucina: nel tuo create è separato da ;
+            String tipoCucina = ristorante.getTipoCucina();
+
+            italianaCheck.setSelected(false);
+            hamburgerCheck.setSelected(false);
+            asiaticaCheck.setSelected(false);
+            sudamericanaCheck.setSelected(false);
+
+            if (tipoCucina != null && !tipoCucina.isBlank()) {
+                String[] tipi = tipoCucina.split(";");
+                for (String tipo : tipi) {
+                    switch (tipo.trim().toLowerCase()) {
+                        case "italiana":
+                            italianaCheck.setSelected(true);
+                            break;
+                        case "hamburger":
+                            hamburgerCheck.setSelected(true);
+                            break;
+                        case "asiatica":
+                            asiaticaCheck.setSelected(true);
+                            break;
+                        case "sudamericana":
+                            sudamericanaCheck.setSelected(true);
+                            break;
+                    }
+                }
+            }
+
+            // Prenotazione
+            if (ristorante.isPrenotazione()) prenotazioneSi.setSelected(true);
+            else prenotazioneNo.setSelected(true);
+
+            // Delivery
+            if (ristorante.isDelivery()) deliverySi.setSelected(true);
+            else deliveryNo.setSelected(true);
+        });
+    }
+
+    private String compilaCampo(String s) {
+        return s == null ? "" : s;
+    }
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;

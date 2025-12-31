@@ -168,7 +168,6 @@ public class CreaRistoranteController {
             valid = false;
         }
 
-        // Se anche un solo campo non è valido → STOP
         if (!valid) return;
 
         // Se i dati sono validi
@@ -202,15 +201,31 @@ public class CreaRistoranteController {
             
         if (response.status.equals("OK")) {
 
+        System.out.println("Ristorante creato correttamente!");
+        System.out.println("Nome: " + nome);
+        System.out.println("Nazione: " + nazione);
+        System.out.println("Città: " + citta);
+        System.out.println("Indirizzo: " + indirizzo);
+        System.out.println("Latitudine: " + lat);
+        System.out.println("Longitudine: " + lon);
+        System.out.println("Delivery: " + delivery);
+        System.out.println("Prenotazioni: " + pren);
+        System.out.println("Tipi di cucina: " + tipoCucina);
+        System.out.println("Prezzo: " + prezzo);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Creazione Ristorante");
+        alert.setHeaderText("Ristorante creato con successo!");
+        alert.showAndWait();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
-        Parent root = loader.load();
+        root = loader.load();
 
         RistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
-
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -233,30 +248,6 @@ public class CreaRistoranteController {
                 ex.printStackTrace();
             }
         }
-
-        System.out.println("Ristorante creato correttamente!");
-        System.out.println("Nome: " + nome);
-        System.out.println("Nazione: " + nazione);
-        System.out.println("Città: " + citta);
-        System.out.println("Indirizzo: " + indirizzo);
-        System.out.println("Latitudine: " + lat);
-        System.out.println("Longitudine: " + lon);
-        System.out.println("Delivery: " + delivery);
-        System.out.println("Prenotazioni: " + pren);
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Creazione Ristorante");
-        alert.setHeaderText("Ristorante creato con successo!");
-        alert.showAndWait();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
-        root = loader.load();
-
-        RistorantiController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
     }
 
     // --- FUNZIONI DI SUPPORTO ---
@@ -294,7 +285,6 @@ public class CreaRistoranteController {
     private Double parseDoubleOrNull(String s) {
         if (s == null || s.isBlank()) return null;
         try {
-            // supporta anche "45,12" (virgola italiana)
             String normalized = s.replace(",", ".");
             return Double.parseDouble(normalized);
         } catch (NumberFormatException ex) {

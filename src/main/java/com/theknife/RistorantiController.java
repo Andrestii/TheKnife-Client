@@ -68,7 +68,7 @@ public class RistorantiController {
         this.in = in;
         this.out = out;
 
-        // UI pronta, carichiamo dal server
+        // UI pronta, carico dati dal server
         Platform.runLater(this::loadMyRestaurants);
     }
 
@@ -80,7 +80,6 @@ public class RistorantiController {
 
             String username = SessioneUtente.getInstance().getUsername();
 
-            // Chiamata server
             out.writeObject("getMyRestaurants");
             out.writeObject(username);
             out.flush();
@@ -107,7 +106,7 @@ public class RistorantiController {
                 return;
             }
 
-            // ✅ Crea i quadratini
+            // Crea i quadratini
             for (Ristorante r : lista) {
                 listaRistoranti.getChildren().add(createRestaurantTile(r));
             }
@@ -173,7 +172,7 @@ public class RistorantiController {
 
                 EditRistoranteController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
-                // controller.setRistorante(r); // 👈 PASSAGGIO CHIAVE perchè dico a EditRistoranteController quale ristorante modificare
+                controller.setRistorante(r); // dico a EditRistoranteController quale ristorante modificare
 
                 Stage stage = (Stage) tile.getScene().getWindow();
                 stage.getScene().setRoot(root);

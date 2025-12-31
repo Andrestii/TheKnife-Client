@@ -39,14 +39,14 @@
                 <HBox alignment="CENTER">
                     <ImageView fitWidth="80" fitHeight="80" preserveRatio="true">
                         <image>
-                            <Image url="@logo.png"/>
+                            <Image url="@restaurant.png"/>
                         </image>
                     </ImageView>
                 </HBox>
 
                 <!-- TITOLO -->
                 <HBox alignment="CENTER">
-                    <Label text="Modifica ristorante"
+                    <Label text="Modifica i dati del tuo ristorante"
                            alignment="CENTER"
                            style="-fx-font-size: 24px; -fx-font-weight: bold;
                                   -fx-text-fill: rgb(47,98,84);" />
