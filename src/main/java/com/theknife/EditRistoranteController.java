@@ -19,35 +19,61 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 public class EditRistoranteController {
-    @FXML private TextField nomeField;
-    @FXML private TextField nazioneField;
-    @FXML private TextField cittaField;
-    @FXML private TextField indirizzoField;
-    @FXML private TextField latitudineField;
-    @FXML private TextField longitudineField;
-    @FXML private TextField prezzoField;
+    @FXML
+    private TextField nomeField;
+    @FXML
+    private TextField nazioneField;
+    @FXML
+    private TextField cittaField;
+    @FXML
+    private TextField indirizzoField;
+    @FXML
+    private TextField latitudineField;
+    @FXML
+    private TextField longitudineField;
+    @FXML
+    private TextField prezzoField;
 
-    @FXML private Label infoLabel;
-    @FXML private Label nomeError;
-    @FXML private Label nazioneError;
-    @FXML private Label cittaError;
-    @FXML private Label indirizzoError;
-    @FXML private Label latitudineError;
-    @FXML private Label longitudineError;
-    @FXML private Label prezzoError;
-    @FXML private Label cucinaError;
-    @FXML private Label prenotazioneError;
-    @FXML private Label deliveryError;
+    @FXML
+    private Label infoLabel;
+    @FXML
+    private Label nomeError;
+    @FXML
+    private Label nazioneError;
+    @FXML
+    private Label cittaError;
+    @FXML
+    private Label indirizzoError;
+    @FXML
+    private Label latitudineError;
+    @FXML
+    private Label longitudineError;
+    @FXML
+    private Label prezzoError;
+    @FXML
+    private Label cucinaError;
+    @FXML
+    private Label prenotazioneError;
+    @FXML
+    private Label deliveryError;
 
-    @FXML private CheckBox italianaCheck;
-    @FXML private CheckBox hamburgerCheck;
-    @FXML private CheckBox asiaticaCheck;
-    @FXML private CheckBox sudamericanaCheck;
+    @FXML
+    private CheckBox italianaCheck;
+    @FXML
+    private CheckBox hamburgerCheck;
+    @FXML
+    private CheckBox asiaticaCheck;
+    @FXML
+    private CheckBox sudamericanaCheck;
 
-    @FXML private RadioButton prenotazioneSi;
-    @FXML private RadioButton prenotazioneNo;
-    @FXML private RadioButton deliverySi;
-    @FXML private RadioButton deliveryNo;
+    @FXML
+    private RadioButton prenotazioneSi;
+    @FXML
+    private RadioButton prenotazioneNo;
+    @FXML
+    private RadioButton deliverySi;
+    @FXML
+    private RadioButton deliveryNo;
 
     private ToggleGroup prenGroup;
     private ToggleGroup deliveryGroup;
@@ -61,12 +87,16 @@ public class EditRistoranteController {
     @FXML
     public void initialize() {
         prenGroup = new ToggleGroup();
-        if (prenotazioneSi != null) prenotazioneSi.setToggleGroup(prenGroup);
-        if (prenotazioneNo != null) prenotazioneNo.setToggleGroup(prenGroup);
+        if (prenotazioneSi != null)
+            prenotazioneSi.setToggleGroup(prenGroup);
+        if (prenotazioneNo != null)
+            prenotazioneNo.setToggleGroup(prenGroup);
 
         deliveryGroup = new ToggleGroup();
-        if (deliverySi != null) deliverySi.setToggleGroup(deliveryGroup);
-        if (deliveryNo != null) deliveryNo.setToggleGroup(deliveryGroup);
+        if (deliverySi != null)
+            deliverySi.setToggleGroup(deliveryGroup);
+        if (deliveryNo != null)
+            deliveryNo.setToggleGroup(deliveryGroup);
 
         clearErrors();
         populateFieldsIfReady();
@@ -80,8 +110,75 @@ public class EditRistoranteController {
         RistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
 
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void onCancellaClicked(ActionEvent event) {
+        // Senza ristorante selezionato non posso cancellare
+        if (ristorante == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore");
+            alert.setHeaderText("Ristorante non selezionato");
+            alert.setContentText("Torna indietro e seleziona un ristorante.");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Conferma cancellazione");
+        confirm.setHeaderText("Vuoi davvero cancellare questo ristorante?");
+        confirm.setContentText("Questa operazione è definitiva.");
+        var result = confirm.showAndWait();
+
+        if (result.isEmpty() || result.get() != javafx.scene.control.ButtonType.OK) {
+            return;
+        }
+
+        try {
+            out.writeObject("deleteRestaurant");
+            out.writeObject(ristorante.getId());
+            out.flush();
+
+            ServerResponse response;
+            try {
+                response = (ServerResponse) in.readObject();
+            } catch (ClassNotFoundException ex) {
+                throw new IOException("Risposta del server non valida", ex);
+            }
+
+            if ("OK".equals(response.status)) {
+                Alert ok = new Alert(Alert.AlertType.INFORMATION);
+                ok.setTitle("Cancellazione ristorante");
+                ok.setHeaderText("Ristorante cancellato con successo!");
+                ok.showAndWait();
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+                Parent root = loader.load();
+
+                RistorantiController controller = loader.getController();
+                controller.setConnectionSocket(socket, in, out);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.getScene().setRoot(root);
+
+            } else {
+                Alert err = new Alert(Alert.AlertType.ERROR);
+                err.setTitle("Errore cancellazione");
+                err.setHeaderText("Non è stato possibile cancellare il ristorante");
+                err.setContentText(response.getPayload() != null ? response.getPayload().toString() : "Riprova più tardi");
+                err.showAndWait();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert err = new Alert(Alert.AlertType.ERROR);
+            err.setTitle("Errore di connessione");
+            err.setHeaderText("Errore durante la cancellazione");
+            err.setContentText("Riprova più tardi.");
+            err.showAndWait();
+        }
     }
 
     @FXML
@@ -105,8 +202,7 @@ public class EditRistoranteController {
         String latStr = latitudineField.getText().trim();
         String lonStr = longitudineField.getText().trim();
         String prezzoStr = prezzoField.getText().trim();
-        boolean cucinaSelezionata =
-                italianaCheck.isSelected() ||
+        boolean cucinaSelezionata = italianaCheck.isSelected() ||
                 hamburgerCheck.isSelected() ||
                 asiaticaCheck.isSelected() ||
                 sudamericanaCheck.isSelected();
@@ -166,7 +262,8 @@ public class EditRistoranteController {
             valid = false;
         }
 
-        if (!valid) return;
+        if (!valid)
+            return;
 
         boolean delivery = deliverySelected == deliverySi;
         boolean pren = prenSelected == prenotazioneSi;
@@ -179,12 +276,12 @@ public class EditRistoranteController {
         out.writeObject(nazione);
         out.writeObject(citta);
         out.writeObject(indirizzo);
-        out.writeObject(lat);        
-        out.writeObject(lon);        
-        out.writeObject(delivery);   
-        out.writeObject(pren);       
+        out.writeObject(lat);
+        out.writeObject(lon);
+        out.writeObject(delivery);
+        out.writeObject(pren);
         out.writeObject(tipoCucina);
-        out.writeObject(prezzo);     
+        out.writeObject(prezzo);
         out.flush();
 
         ServerResponse response;
@@ -206,13 +303,14 @@ public class EditRistoranteController {
             RistorantiController controller = loader.getController();
             controller.setConnectionSocket(socket, in, out);
 
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Errore di modifica del ristorante");
             alert.setHeaderText("Modifica dei dati del ristorante non riuscita");
-            alert.setContentText(response.getPayload() != null ? response.getPayload().toString() : "Riprova più tardi...");
+            alert.setContentText(
+                    response.getPayload() != null ? response.getPayload().toString() : "Riprova più tardi...");
             alert.showAndWait();
         }
     }
@@ -220,16 +318,20 @@ public class EditRistoranteController {
     // --- UTIL ---
 
     private void setError(TextField field, Label label, String message) {
-        if (label != null) label.setText(message);
-        if (field != null) field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+        if (label != null)
+            label.setText(message);
+        if (field != null)
+            field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
     }
 
     private void resetBorder(TextField field) {
-        if (field != null) field.setStyle("");
+        if (field != null)
+            field.setStyle("");
     }
 
     private Double parseDoubleOrNull(String s) {
-        if (s == null || s.isBlank()) return null;
+        if (s == null || s.isBlank())
+            return null;
         try {
             String normalized = s.replace(",", ".");
             return Double.parseDouble(normalized);
@@ -241,26 +343,41 @@ public class EditRistoranteController {
     private String buildTipologiaCucina() {
         StringBuilder sb = new StringBuilder();
 
-        if (italianaCheck.isSelected()) sb.append("italiana;");
-        if (hamburgerCheck.isSelected()) sb.append("hamburger;");
-        if (asiaticaCheck.isSelected()) sb.append("asiatica;");
-        if (sudamericanaCheck.isSelected()) sb.append("sudamericana;");
+        if (italianaCheck.isSelected())
+            sb.append("italiana;");
+        if (hamburgerCheck.isSelected())
+            sb.append("hamburger;");
+        if (asiaticaCheck.isSelected())
+            sb.append("asiatica;");
+        if (sudamericanaCheck.isSelected())
+            sb.append("sudamericana;");
 
-        if (sb.length() > 0) sb.setLength(sb.length() - 1);
+        if (sb.length() > 0)
+            sb.setLength(sb.length() - 1);
         return sb.toString();
     }
 
     private void clearErrors() {
-        if (nomeError != null) nomeError.setText("");
-        if (nazioneError != null) nazioneError.setText("");
-        if (cittaError != null) cittaError.setText("");
-        if (indirizzoError != null) indirizzoError.setText("");
-        if (latitudineError != null) latitudineError.setText("");
-        if (longitudineError != null) longitudineError.setText("");
-        if (prezzoError != null) prezzoError.setText("");
-        if (cucinaError != null) cucinaError.setText("");
-        if (prenotazioneError != null) prenotazioneError.setText("");
-        if (deliveryError != null) deliveryError.setText("");
+        if (nomeError != null)
+            nomeError.setText("");
+        if (nazioneError != null)
+            nazioneError.setText("");
+        if (cittaError != null)
+            cittaError.setText("");
+        if (indirizzoError != null)
+            indirizzoError.setText("");
+        if (latitudineError != null)
+            latitudineError.setText("");
+        if (longitudineError != null)
+            longitudineError.setText("");
+        if (prezzoError != null)
+            prezzoError.setText("");
+        if (cucinaError != null)
+            cucinaError.setText("");
+        if (prenotazioneError != null)
+            prenotazioneError.setText("");
+        if (deliveryError != null)
+            deliveryError.setText("");
 
         resetBorder(nomeField);
         resetBorder(nazioneField);
@@ -277,8 +394,10 @@ public class EditRistoranteController {
     }
 
     private void populateFieldsIfReady() {
-        if (nomeField == null) return;
-        if (ristorante == null) return;
+        if (nomeField == null)
+            return;
+        if (ristorante == null)
+            return;
 
         Platform.runLater(() -> {
             nomeField.setText(compilaCampo(ristorante.getNome()));
@@ -318,12 +437,16 @@ public class EditRistoranteController {
             }
 
             // Prenotazione
-            if (ristorante.isPrenotazione()) prenotazioneSi.setSelected(true);
-            else prenotazioneNo.setSelected(true);
+            if (ristorante.isPrenotazione())
+                prenotazioneSi.setSelected(true);
+            else
+                prenotazioneNo.setSelected(true);
 
             // Delivery
-            if (ristorante.isDelivery()) deliverySi.setSelected(true);
-            else deliveryNo.setSelected(true);
+            if (ristorante.isDelivery())
+                deliverySi.setSelected(true);
+            else
+                deliveryNo.setSelected(true);
         });
     }
 
