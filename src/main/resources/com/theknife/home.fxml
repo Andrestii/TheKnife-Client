@@ -98,10 +98,10 @@
                     <!-- Tipologia di cucina -->
                     <Label text="Tipologia di cucina:" style="-fx-font-weight: bold;"/>
                     <HBox spacing="20">
-                        <CheckBox fx:id="pizzaCheck" text="Pizza"/>
-                        <CheckBox fx:id="burgerCheck" text="Burger"/>
-                        <CheckBox fx:id="asiaticaCheck" text="Asiatica"/>
-                        <CheckBox fx:id="sudamericanaCheck" text="Sudamericana"/>
+                        <RadioButton fx:id="pizzaCheck" text="Pizza"/>
+                        <RadioButton fx:id="burgerCheck" text="Burger"/>
+                        <RadioButton fx:id="asiaticaCheck" text="Asiatica"/>
+                        <RadioButton fx:id="sudamericanaCheck" text="Sudamericana"/>
                     </HBox>
 
                     <!-- Prezzo -->

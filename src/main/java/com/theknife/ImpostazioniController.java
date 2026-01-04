@@ -92,7 +92,7 @@ public class ImpostazioniController {
 
         // Data di nascita
         if (!validaData(dataNascitaField.getText())) {
-            mostraErroreCampo(dataNascitaField, dataError, "Data non valida (gg/mm/aaaa)");
+            mostraErroreCampo(dataNascitaField, dataError, "Data non valida (YYYY-MM-DD)");
             valido = false;
         }
 

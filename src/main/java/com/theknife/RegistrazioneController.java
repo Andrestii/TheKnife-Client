@@ -94,7 +94,7 @@ public class RegistrazioneController {
 
         // Data di nascita
         if (!validaData(dataNascitaField.getText())) {
-            mostraErroreCampo(dataNascitaField, dataError, "Inserisci una data valida (gg/mm/aaaa)");
+            mostraErroreCampo(dataNascitaField, dataError, "Inserisci una data valida (YYYY-MM-DD)");
             valido = false;
         }
 

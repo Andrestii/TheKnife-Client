@@ -4,12 +4,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
@@ -26,10 +26,10 @@ public class HomeController {
     @FXML private VBox filtersBox;
 
     // Campi filtri
-    @FXML private CheckBox pizzaCheck;
-    @FXML private CheckBox burgerCheck;
-    @FXML private CheckBox asiaticaCheck;
-    @FXML private CheckBox sudamericanaCheck;
+    @FXML private RadioButton pizzaCheck;
+    @FXML private RadioButton burgerCheck;
+    @FXML private RadioButton asiaticaCheck;
+    @FXML private RadioButton sudamericanaCheck;
     @FXML private TextField prezzoMinField;
     @FXML private TextField prezzoMaxField;
     @FXML private RadioButton deliverySi;
@@ -39,6 +39,7 @@ public class HomeController {
     @FXML private Slider votoSlider;
     @FXML private Label votoValueLabel;
 
+    private ToggleGroup tipoCucinaGroup;
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenotazioniGroup;
 
@@ -59,6 +60,13 @@ public class HomeController {
         } else {
             positionField.setText("Posizione");
         }
+
+        // Gruppi radio per tipologie cucina
+        tipoCucinaGroup = new ToggleGroup();
+        if (pizzaCheck != null) pizzaCheck.setToggleGroup(tipoCucinaGroup);
+        if (burgerCheck != null) burgerCheck.setToggleGroup(tipoCucinaGroup);
+        if (asiaticaCheck != null) asiaticaCheck.setToggleGroup(tipoCucinaGroup);
+        if (sudamericanaCheck != null) sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
 
         // Gruppi radio per le opzioni sì/no
         deliveryGroup = new ToggleGroup();
@@ -84,8 +92,53 @@ public class HomeController {
     }
 
     @FXML
-    private void onSearchClicked() {
-        System.out.println("Ricerca avviata per: " + searchField.getText());
+    private void onSearchClicked(ActionEvent e) throws Exception {
+        
+        //System.out.println("Ricerca avviata per: " + searchField.getText());
+
+        // 1) Nome e città
+        String nome = (searchField != null) ? searchField.getText().trim() : null;
+        if (nome != null && nome.isBlank()) nome = null;
+
+        String citta = (positionField != null) ? positionField.getText().trim() : null;
+        if (citta != null && (citta.isBlank() || "Posizione".equalsIgnoreCase(citta))) citta = null;
+
+        // 2) Tipo cucina (il server accetta UNA stringa)
+        String tipoCucina = null;
+
+        if (pizzaCheck != null && pizzaCheck.isSelected()) { tipoCucina = "italiana"; }
+        if (burgerCheck != null && burgerCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "hamburger"; }
+        if (asiaticaCheck != null && asiaticaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "asiatica"; }
+        if (sudamericanaCheck != null && sudamericanaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "sudamericana"; }
+
+        // 3) Prezzo min/max
+        Integer prezzoMin = parseNullableInt(prezzoMinField);
+        Integer prezzoMax = parseNullableInt(prezzoMaxField);
+
+        // 4) Delivery / Prenotazioni (null = non filtrare)
+        Boolean delivery = null;
+        if (deliverySi != null && deliverySi.isSelected()) delivery = true;
+        else if (deliveryNo != null && deliveryNo.isSelected()) delivery = false;
+
+        Boolean prenotazione = null;
+        if (prenotazioniSi != null && prenotazioniSi.isSelected()) prenotazione = true;
+        else if (prenotazioniNo != null && prenotazioniNo.isSelected()) prenotazione = false;
+
+        System.out.println("[HOME] Ricerca: nome=" + nome + ", citta=" + citta + ", tipo=" + tipoCucina
+                + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione);
+
+        // 5) Apri pagina risultati e PASSA i parametri
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("risultatiRistoranti.fxml"));
+        Parent root = loader.load();
+
+        RisultatiRistorantiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        // ORDINE IDENTICO AL SERVER:
+        controller.setSearchParams(nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
@@ -146,6 +199,20 @@ public class HomeController {
         }
     }
 
+    private Integer parseNullableInt(TextField field) {
+        if (field != null) {
+            String text = field.getText().trim();
+            if (!text.isBlank()) {
+                try {
+                    return Integer.parseInt(text);
+                } catch (NumberFormatException e) {
+                    System.out.println("[HOME] Valore non valido per campo intero: " + text);
+                }
+            }
+        }
+        return null;
+    }
+    
     public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
         this.socket = socket;
         this.in = in;
