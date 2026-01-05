@@ -98,7 +98,7 @@
                     <!-- Tipologia di cucina -->
                     <Label text="Tipologia di cucina:" style="-fx-font-weight: bold;"/>
                     <HBox spacing="20">
-                        <RadioButton fx:id="pizzaCheck" text="Pizza"/>
+                        <RadioButton fx:id="italianaCheck" text="Italiana"/>
                         <RadioButton fx:id="burgerCheck" text="Burger"/>
                         <RadioButton fx:id="asiaticaCheck" text="Asiatica"/>
                         <RadioButton fx:id="sudamericanaCheck" text="Sudamericana"/>

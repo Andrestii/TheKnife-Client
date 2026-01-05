@@ -26,7 +26,7 @@ public class HomeController {
     @FXML private VBox filtersBox;
 
     // Campi filtri
-    @FXML private RadioButton pizzaCheck;
+    @FXML private RadioButton italianaCheck;
     @FXML private RadioButton burgerCheck;
     @FXML private RadioButton asiaticaCheck;
     @FXML private RadioButton sudamericanaCheck;
@@ -63,7 +63,7 @@ public class HomeController {
 
         // Gruppi radio per tipologie cucina
         tipoCucinaGroup = new ToggleGroup();
-        if (pizzaCheck != null) pizzaCheck.setToggleGroup(tipoCucinaGroup);
+        if (italianaCheck != null) italianaCheck.setToggleGroup(tipoCucinaGroup);
         if (burgerCheck != null) burgerCheck.setToggleGroup(tipoCucinaGroup);
         if (asiaticaCheck != null) asiaticaCheck.setToggleGroup(tipoCucinaGroup);
         if (sudamericanaCheck != null) sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
@@ -106,7 +106,7 @@ public class HomeController {
         // 2) Tipo cucina (il server accetta UNA stringa)
         String tipoCucina = null;
 
-        if (pizzaCheck != null && pizzaCheck.isSelected()) { tipoCucina = "italiana"; }
+        if (italianaCheck != null && italianaCheck.isSelected()) { tipoCucina = "italiana"; }
         if (burgerCheck != null && burgerCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "hamburger"; }
         if (asiaticaCheck != null && asiaticaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "asiatica"; }
         if (sudamericanaCheck != null && sudamericanaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "sudamericana"; }

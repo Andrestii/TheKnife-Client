@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,9 +20,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 
 public class RisultatiRistorantiController {
 
@@ -32,6 +36,9 @@ public class RisultatiRistorantiController {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+
+    private final Object ioLock = new Object();
+    private final Set<Integer> favoriteIds = ConcurrentHashMap.newKeySet();
 
     // filtri ricevuti dalla pagina di ricerca
     private String nome;
@@ -71,7 +78,7 @@ public class RisultatiRistorantiController {
         this.delivery = delivery;
         this.prenotazione = prenotazione;
 
-        Platform.runLater(this::loadResults);
+        Platform.runLater(this::loadFavoritesThenResults);
     }
 
     @FXML
@@ -136,18 +143,57 @@ public class RisultatiRistorantiController {
         }
     }
 
+    private void loadFavoritesThenResults() {
+        // Se guest: niente icone, ma carico comunque i risultati
+        if (SessioneUtente.getInstance().getRuolo() == Ruolo.GUEST) {
+            loadResults();
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                String username = SessioneUtente.getInstance().getUsername();
+
+                synchronized (ioLock) {
+                    out.writeObject("listFavorites");
+                    out.writeObject(username);
+                    out.flush();
+
+                    Object obj = in.readObject();
+                    if (obj instanceof ServerResponse) {
+                        ServerResponse resp = (ServerResponse) obj;
+                        if ("OK".equals(resp.getStatus())) {
+                            @SuppressWarnings("unchecked")
+                            List<Ristorante> list = (List<Ristorante>) resp.getPayload();
+
+                            favoriteIds.clear();
+                            if (list != null) {
+                                for (Ristorante r : list) favoriteIds.add(r.getId());
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            Platform.runLater(this::loadResults);
+        }).start();
+    }
+
     private void showEmptyMessage(String msg) {
         Label label = new Label(msg);
         label.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
         listaRisultati.getChildren().setAll(label);
     }
 
-    private VBox createRestaurantTile(Ristorante r) {
-        VBox tile = new VBox(10);
-        tile.setAlignment(Pos.CENTER);
-        tile.setPadding(new Insets(10));
-        tile.setPrefSize(150, 190);
-        tile.setMaxSize(150, 190);
+    private StackPane createRestaurantTile(Ristorante r) {
+        HBox tile = new HBox(12);
+        tile.setAlignment(Pos.CENTER_LEFT);
+        tile.setPadding(new Insets(12));
+        tile.setPrefSize(600, 200);
+        tile.setMaxSize(600, 200);
         tile.setStyle(
             "-fx-background-color: white;" +
             "-fx-background-radius: 12;" +
@@ -156,14 +202,15 @@ public class RisultatiRistorantiController {
             "-fx-border-width: 3;"
         );
 
+        // Immagine a sinistra
         ImageView img = new ImageView(new Image(getClass().getResourceAsStream("restaurant.png")));
-        img.setFitWidth(110);
-        img.setFitHeight(90);
+        img.setFitWidth(200);
+        img.setFitHeight(180);
         img.setPreserveRatio(true);
 
         StackPane imgBox = new StackPane(img);
-        imgBox.setPrefSize(110, 90);
-        imgBox.setMaxSize(110, 90);
+        imgBox.setPrefSize(200, 180);
+        imgBox.setMaxSize(200, 180);
         imgBox.setStyle(
             "-fx-background-color: #f2f2f2;" +
             "-fx-background-radius: 10;" +
@@ -172,28 +219,104 @@ public class RisultatiRistorantiController {
             "-fx-border-width: 1;"
         );
 
+        // Testi a destra
         Label nomeLbl = new Label(r.getNome());
         nomeLbl.setWrapText(true);
-        nomeLbl.setMaxWidth(130);
-        nomeLbl.setAlignment(Pos.CENTER);
-        nomeLbl.setStyle("-fx-text-fill: rgb(47,98,84); -fx-font-weight: bold; -fx-font-size: 14px;");
+        nomeLbl.setMaxWidth(380);
+        nomeLbl.setStyle("-fx-text-fill: rgb(47,98,84); -fx-font-weight: bold; -fx-font-size: 25px;");
 
-        tile.getChildren().addAll(imgBox, nomeLbl);
+        Label indirizzoLbl = new Label(r.getIndirizzo());
+        indirizzoLbl.setWrapText(true);
+        indirizzoLbl.setMaxWidth(380);
+        indirizzoLbl.setStyle("-fx-text-fill: #444; -fx-font-size: 20px;");
 
-        // Click: qui puoi aprire una pagina dettagli/ristorante se ce l’hai
+        Label cucinaLbl = new Label(capitalizeFirst(r.getTipoCucina()));
+        cucinaLbl.setWrapText(true);
+        cucinaLbl.setMaxWidth(380);
+        cucinaLbl.setStyle("-fx-text-fill: #666; -fx-font-size: 20px; -fx-font-style: italic;");
+
+        VBox textBox = new VBox(20, nomeLbl, indirizzoLbl, cucinaLbl);
+        textBox.setAlignment(Pos.CENTER_LEFT);
+
+        tile.getChildren().addAll(imgBox, textBox);
+
         tile.setOnMouseClicked(ev -> {
             System.out.println("[CLIENT] Cliccato risultato: " + r.getId() + " - " + r.getNome());
-            // Esempio (se esiste): apriSchedaRistorante(r);
         });
 
-        return tile;
+        // --- Wrapper to overlay the favorite icon ---
+        StackPane wrapper = new StackPane();
+        wrapper.setPrefSize(600, 200);
+        wrapper.setMaxSize(600, 200);
+
+        wrapper.getChildren().add(tile); // aggiungi sempre il tile
+
+        // Mostra icona SOLO se non sei guest
+        if (SessioneUtente.getInstance().getRuolo() != Ruolo.GUEST) {
+            ImageView favIcon = new ImageView();
+            favIcon.setFitWidth(28);
+            favIcon.setFitHeight(28);
+            favIcon.setPreserveRatio(true);
+            favIcon.setStyle("-fx-cursor: hand;");
+
+            StackPane.setAlignment(favIcon, Pos.TOP_RIGHT);
+            StackPane.setMargin(favIcon, new Insets(10, 10, 0, 0));
+
+            // 1) icona iniziale: bianca se NON è nei preferiti, rossa se lo è
+            boolean isFav = favoriteIds.contains(r.getId());
+            setFavoriteIconImage(favIcon, isFav);
+
+            // 2) click: toggle add/remove + aggiorna icona
+            favIcon.setOnMouseClicked(ev -> {
+                ev.consume();
+                toggleFavorite(r.getId(), favIcon);
+            });
+            wrapper.getChildren().add(favIcon);
+        }
+
+        return wrapper;
     }
 
-    /**
-     * Piccola interfaccia “ponte” opzionale:
-     * se i controller delle pagine precedenti la implementano, puoi passare la socket senza cast specifici.
-     */
-    public interface ConnectionAware {
-        void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out);
+    private String capitalizeFirst(String s) {
+        if (s == null) return "-";
+        s = s.trim();
+        if (s.isEmpty()) return "-";
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
+
+    private void setFavoriteIconImage(ImageView icon, boolean isFavorite) {
+        String file = isFavorite ? "favoriteIconRed.png" : "favoriteIconWhite.png";
+        icon.setImage(new Image(getClass().getResourceAsStream(file)));
+    }
+
+    private void toggleFavorite(int idRistorante, ImageView icon) {
+        boolean currentlyFav = favoriteIds.contains(idRistorante);
+        String command = currentlyFav ? "removeFavorite" : "addFavorite";
+        String username = SessioneUtente.getInstance().getUsername();
+
+        new Thread(() -> {
+            try {
+                synchronized (ioLock) {
+                    out.writeObject(command);
+                    out.writeObject(username);
+                    out.writeObject(idRistorante);
+                    out.flush();
+
+                    Object obj = in.readObject();
+                    if (obj instanceof ServerResponse) {
+                        ServerResponse resp = (ServerResponse) obj;
+                        if ("OK".equals(resp.getStatus())) {
+                            if (currentlyFav) favoriteIds.remove(idRistorante);
+                            else favoriteIds.add(idRistorante);
+
+                            Platform.runLater(() -> setFavoriteIconImage(icon, !currentlyFav));
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+
 }
