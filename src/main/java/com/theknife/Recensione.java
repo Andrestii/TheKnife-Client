@@ -1,4 +1,4 @@
-package theknifeclient;
+package com.theknife;
 
 import java.io.Serializable;
 

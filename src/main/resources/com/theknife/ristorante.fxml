@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.theknife.RistoranteController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: rgb(47,98,84);">
+
+    <top>
+        <HBox alignment="TOP_LEFT">
+            <padding>
+                <Insets top="15" left="15" bottom="15" right="15"/>
+            </padding>
+            <Button text="← Indietro" onAction="#onBackClicked"
+                    style="-fx-background-color: #d32f2f; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-background-radius: 8; -fx-padding: 6 18;
+                           -fx-border-color: #b71c1c; -fx-border-width: 2;
+                           -fx-border-radius: 8;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="18">
+            <padding>
+                <Insets top="20" left="20" right="20" bottom="20"/>
+            </padding>
+
+            <HBox spacing="18" alignment="TOP_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 14;
+                         -fx-border-radius: 14; -fx-border-color: rgb(47,98,84); -fx-border-width: 3;">
+                <padding>
+                    <Insets top="18" left="18" right="18" bottom="18"/>
+                </padding>
+
+                <ImageView fx:id="imgRistorante" fitWidth="320" fitHeight="260" preserveRatio="true"/>
+
+                <VBox spacing="10" alignment="TOP_LEFT">
+                    <Label fx:id="lblNome"
+                           style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: rgb(47,98,84);"/>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="🍽" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblTipoCucina" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="📍" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblIndirizzo" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="🌍" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblCittaNazione" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="🧭" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblLatLon" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="💰" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblPrezzo" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="📅" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblPrenotazione" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="🛵" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblDelivery" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="14" alignment="CENTER">
+                <Button fx:id="btnRecensioni" text="Leggi recensioni" onAction="#onViewReviewsClicked"
+                        style="-fx-background-color: white; -fx-text-fill: rgb(47,98,84);
+                               -fx-font-weight: bold; -fx-font-size: 14px;
+                               -fx-background-radius: 10; -fx-padding: 10 18;
+                               -fx-border-color: rgb(47,98,84); -fx-border-width: 3; -fx-border-radius: 10;"/>
+
+                <Button fx:id="btnScriviRecensione" text="Scrivi recensione" onAction="#onWriteOrEditReviewClicked"
+                        style="-fx-background-color: white; -fx-text-fill: rgb(47,98,84);
+                               -fx-font-weight: bold; -fx-font-size: 14px;
+                               -fx-background-radius: 10; -fx-padding: 10 18;
+                               -fx-border-color: rgb(47,98,84); -fx-border-width: 3; -fx-border-radius: 10;"/>
+
+                <Button fx:id="btnPreferiti" text="Aggiungi ai preferiti" onAction="#onToggleFavoriteClicked"
+                        style="-fx-background-color: #ffeb3b; -fx-text-fill: #333;
+                               -fx-font-weight: bold; -fx-font-size: 14px;
+                               -fx-background-radius: 10; -fx-padding: 10 18;
+                               -fx-border-color: #fbc02d; -fx-border-width: 3; -fx-border-radius: 10;"/>
+            </HBox>
+
+            <Label fx:id="lblStatus"
+                   style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

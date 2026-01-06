@@ -148,8 +148,7 @@ public class PreferitiController {
         tile.getChildren().addAll(imgBox, nome);
 
         // DA SISTEMARE:
-        // Se vuoi aprire la stessa edit page al click:
-        /*tile.setOnMouseClicked(ev -> {
+        tile.setOnMouseClicked(ev -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("ristorante.fxml"));
                 Parent root = loader.load();
@@ -164,7 +163,7 @@ public class PreferitiController {
                 ex.printStackTrace();
             }
         });
-        */
+        
 
         return tile;
     }
