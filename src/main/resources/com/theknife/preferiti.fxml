@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.theknife.PreferitiController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: rgb(47,98,84);">
+
+    <!-- Pulsante INDIETRO -->
+    <top>
+        <HBox alignment="TOP_LEFT">
+            <padding>
+                <Insets top="15" left="15" bottom="15" right="15"/>
+            </padding>
+
+            <Button text="← Indietro" onAction="#onBackClicked"
+                    style="-fx-background-color: #d32f2f; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-background-radius: 8; -fx-padding: 6 18;
+                           -fx-border-color: #b71c1c; -fx-border-width: 2;
+                           -fx-border-radius: 8;"/>
+        </HBox>
+    </top>
+
+    <!-- Titolo centrale -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="30">
+            <Label text="I tuoi preferiti"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+            <HBox alignment="TOP_CENTER" spacing="40">
+
+                <!-- Lista preferiti -->
+                <FlowPane fx:id="listaPreferiti"
+                          hgap="20" vgap="20"
+                          prefWrapLength="500"
+                          alignment="TOP_LEFT">
+                </FlowPane>
+
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

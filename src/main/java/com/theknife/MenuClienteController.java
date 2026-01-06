@@ -74,12 +74,19 @@ public class MenuClienteController {
     }
 
     @FXML
-    private void onPreferitiClicked() {
-        System.out.println("Preferiti cliccato");
+    private void onPreferitiClicked(ActionEvent e) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("preferiti.fxml"));
+        root = loader.load();
+
+        PreferitiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
-    private void onRecensioniClicked() {
+    private void onRecensioniClicked(ActionEvent e) throws Exception {
         System.out.println("Recensioni cliccato");
     }
 
