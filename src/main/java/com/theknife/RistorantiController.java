@@ -28,6 +28,7 @@ public class RistorantiController {
 
     private Stage stage;
     private Parent root;
+    private Parent previousRoot;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -41,14 +42,12 @@ public class RistorantiController {
 
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
-        root = loader.load();
-
-        MenuRistoratoreController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+        try {
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -58,6 +57,7 @@ public class RistorantiController {
 
         CreaRistoranteController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -70,6 +70,10 @@ public class RistorantiController {
 
         // UI pronta, carico dati dal server
         Platform.runLater(this::loadMyRestaurants);
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 
     private void loadMyRestaurants() {
@@ -172,6 +176,7 @@ public class RistorantiController {
 
                 EditRistoranteController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r); // dico a EditRistoranteController quale ristorante modificare
 
                 Stage stage = (Stage) tile.getScene().getWindow();

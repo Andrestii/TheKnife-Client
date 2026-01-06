@@ -41,6 +41,7 @@ public class ImpostazioniController {
 
     private Stage stage;
     private Parent root;
+    private Parent previousRoot;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -163,6 +164,7 @@ public class ImpostazioniController {
 
                         MenuClienteController controller = loader.getController();
                         controller.setConnectionSocket(socket, in, out);
+                        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                         stage.getScene().setRoot(root);
@@ -184,10 +186,12 @@ public class ImpostazioniController {
     @FXML
     private void onIndietroClicked(ActionEvent e) throws Exception {
 
+        /*
         SessioneUtente sessione = SessioneUtente.getInstance();
 
         FXMLLoader loader;
 
+        
         switch (sessione.getRuolo()) {
             case CLIENTE:
                 //App.setRoot("menuCliente");
@@ -227,6 +231,15 @@ public class ImpostazioniController {
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 break;
+        }
+        */
+
+        try {
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (previousRoot != null) 
+                stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -286,5 +299,9 @@ public class ImpostazioniController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

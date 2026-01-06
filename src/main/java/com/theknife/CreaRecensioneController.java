@@ -24,9 +24,9 @@ public class CreaRecensioneController {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private Parent previousRoot;
 
     private Ristorante ristorante;
-    private Parent previousRoot;
 
     @FXML
     private void initialize() {

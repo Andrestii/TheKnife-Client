@@ -131,11 +131,7 @@ public class RistoranteController {
     private void onBackClicked(ActionEvent e) {
         try {
             Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) {
-                stage.getScene().setRoot(previousRoot);
-                return;
-            }
-            stage.getScene().setRoot(((Node)e.getSource()).getScene().getRoot());
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

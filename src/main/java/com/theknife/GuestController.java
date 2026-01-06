@@ -19,6 +19,7 @@ public class GuestController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Parent previousRoot;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -38,14 +39,12 @@ public class GuestController {
         
         //App.setRoot("welcome"); // Eliminare riga
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
-        root = loader.load();
-
-        WelcomeController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+        try {
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -65,6 +64,7 @@ public class GuestController {
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -74,5 +74,9 @@ public class GuestController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

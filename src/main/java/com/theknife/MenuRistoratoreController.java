@@ -18,6 +18,7 @@ public class MenuRistoratoreController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Parent previousRoot;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -40,6 +41,7 @@ public class MenuRistoratoreController {
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -54,6 +56,7 @@ public class MenuRistoratoreController {
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -68,6 +71,7 @@ public class MenuRistoratoreController {
 
         RistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -82,6 +86,7 @@ public class MenuRistoratoreController {
 
         ImpostazioniController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -98,6 +103,7 @@ public class MenuRistoratoreController {
 
         WelcomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -107,5 +113,9 @@ public class MenuRistoratoreController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

@@ -28,6 +28,7 @@ public class PreferitiController {
 
     private Stage stage;
     private Parent root;
+    private Parent previousRoot;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -41,14 +42,12 @@ public class PreferitiController {
 
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
-        root = loader.load();
-
-        MenuClienteController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+        try {
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
@@ -57,6 +56,10 @@ public class PreferitiController {
         this.out = out;
 
         Platform.runLater(this::loadFavorites);
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 
     private void loadFavorites() {
@@ -155,6 +158,7 @@ public class PreferitiController {
 
                 RistoranteController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r);
 
                 Stage stage = (Stage) tile.getScene().getWindow();

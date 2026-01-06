@@ -22,21 +22,19 @@ public class LoginController {
 
     private Stage stage;
     private Parent root;
+    private Parent previousRoot;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
-        root = loader.load();
-
-        WelcomeController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+        try {
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -89,6 +87,7 @@ public class LoginController {
 
                 HomeController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -110,6 +109,7 @@ public class LoginController {
 
                 WelcomeController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -124,5 +124,9 @@ public class LoginController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

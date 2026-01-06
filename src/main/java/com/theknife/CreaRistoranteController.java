@@ -62,6 +62,7 @@ public class CreaRistoranteController {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private Parent previousRoot;
 
     @FXML
     public void initialize() {
@@ -78,14 +79,12 @@ public class CreaRistoranteController {
 
     @FXML
     private void onBackClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
-        root = loader.load();
-
-        RistorantiController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
+        try {
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -223,6 +222,7 @@ public class CreaRistoranteController {
 
         RistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)event.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -240,6 +240,7 @@ public class CreaRistoranteController {
 
                 RistorantiController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)event.getSource()).getScene().getRoot());
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -315,5 +316,9 @@ public class CreaRistoranteController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

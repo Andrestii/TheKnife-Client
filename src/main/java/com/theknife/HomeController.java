@@ -46,6 +46,7 @@ public class HomeController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Parent previousRoot;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -133,6 +134,7 @@ public class HomeController {
 
         RisultatiRistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         // ORDINE IDENTICO AL SERVER:
         controller.setSearchParams(nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione);
@@ -166,6 +168,7 @@ public class HomeController {
 
                 WelcomeController controllerGuest = loader.getController();
                 controllerGuest.setConnectionSocket(socket, in, out);
+                controllerGuest.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -178,6 +181,7 @@ public class HomeController {
 
                 MenuClienteController controllerCliente = loader.getController();
                 controllerCliente.setConnectionSocket(socket, in, out);
+                controllerCliente.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -190,6 +194,7 @@ public class HomeController {
 
                 MenuRistoratoreController controllerRistoratore = loader.getController();
                 controllerRistoratore.setConnectionSocket(socket, in, out);
+                controllerRistoratore.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
                 stage = (Stage)((Node)e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -217,5 +222,9 @@ public class HomeController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }

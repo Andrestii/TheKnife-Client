@@ -26,6 +26,7 @@ public class WelcomeController {
 
     private Stage stage;
     private Parent root;
+    private Parent previousRoot;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -37,6 +38,7 @@ public class WelcomeController {
 
         RegistrazioneController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -51,6 +53,7 @@ public class WelcomeController {
 
         LoginController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -63,6 +66,7 @@ public class WelcomeController {
 
         GuestController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -89,5 +93,9 @@ public class WelcomeController {
         this.socket = socket;
         this.in = in;
         this.out = out;
+    }
+    
+    public void setPreviousRoot(Parent previousRoot) {
+        this.previousRoot = previousRoot;
     }
 }
