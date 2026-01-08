@@ -66,7 +66,7 @@ public class ImpostazioniController {
             dataNascitaField.setText(sessione.getDataNascita());
         domicilioField.setText(sessione.getLuogo());
         usernameField.setText(sessione.getUsername());
-        passwordField.setText(sessione.getPassword());
+        passwordField.clear();
 
         resetErrorLabels();
         resetFieldStyles();
@@ -111,7 +111,8 @@ public class ImpostazioniController {
 
         // Password
         String password = passwordField.getText();
-        if (!validaPassword(password)) {
+        boolean wantsChangePassword = password != null && !password.isBlank();
+        if (wantsChangePassword && !validaPassword(password)) {
             mostraErroreCampo(passwordField, passwordError, "Password troppo debole");
             valido = false;
         }
@@ -155,7 +156,6 @@ public class ImpostazioniController {
                     sessione.setDataNascita(dataNascitaField.getText());
                     sessione.setLuogo(domicilioField.getText());
                     sessione.setUsername(usernameField.getText());
-                    sessione.setPassword(passwordField.getText());
                     sessione.stampaDettagli();
  
                     try {
@@ -283,7 +283,7 @@ public class ImpostazioniController {
     private boolean validaData(String data) {
         if (data == null || data.isEmpty()) return true;
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsed = LocalDate.parse(data, formatter);
             return !parsed.isAfter(LocalDate.now());
         } catch (DateTimeParseException e) {
