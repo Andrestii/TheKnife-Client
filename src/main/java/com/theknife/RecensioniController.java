@@ -104,18 +104,25 @@ public class RecensioniController {
             @SuppressWarnings("unchecked")
             List<String> usernames = (List<String>) resp2.getPayload();
 
-            // sicurezza: se per qualche motivo la lunghezza non combacia
+            String loggedUsername = SessioneUtente.getInstance().getUsername();
+
+            // check owner (1 chiamata)
+            out.writeObject("isOwnerOfRestaurant");
+            out.writeObject(loggedUsername);
+            out.writeObject(ristorante.getId());
+            out.flush();
+
+            ServerResponse ownerResp = (ServerResponse) in.readObject();
+            boolean isOwner = "OK".equals(ownerResp.getStatus()) && Boolean.TRUE.equals(ownerResp.getPayload());
+
             int n = Math.min(recensioni.size(), usernames != null ? usernames.size() : 0);
-
             for (int i = 0; i < n; i++) {
-                boxRecensioni.getChildren().add(createReviewTile(usernames.get(i), recensioni.get(i)));
+                boxRecensioni.getChildren().add(
+                    createReviewTile(usernames.get(i), recensioni.get(i), isOwner)
+                );
             }
 
-            if (n == 0) {
-                lblStatus.setText("Errore: usernames non disponibili");
-            } else if (recensioni.size() != n) {
-                lblStatus.setText("Attenzione: alcune recensioni non sono state visualizzate");
-            }
+            if (n == 0) lblStatus.setText("Errore: usernames non disponibili");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -123,7 +130,7 @@ public class RecensioniController {
         }
     }
 
-    private VBox createReviewTile(String username, Recensione rec) {
+    private VBox createReviewTile(String username, Recensione rec, boolean isOwner) {
         VBox tile = new VBox(8);
         tile.setStyle(
             "-fx-background-color: white;" +
@@ -144,6 +151,23 @@ public class RecensioniController {
         lblStelle.setStyle("-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;");
 
         header.getChildren().addAll(lblUser, lblStelle);
+
+        // bottone SOLO se owner
+        if (isOwner) {
+            javafx.scene.control.Button btn = new javafx.scene.control.Button(
+                (rec.getRisposta() != null && !rec.getRisposta().trim().isEmpty()) ? "Modifica risposta" : "Rispondi"
+            );
+            btn.setStyle(
+                "-fx-background-color: rgb(47,98,84);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 8;" +
+                "-fx-padding: 6 12;"
+            );
+
+            btn.setOnAction(e -> openRispostaRecensione(e, rec, username));
+            header.getChildren().add(btn);
+        }
 
         Label lblTesto = new Label(rec.getTesto() == null ? "" : rec.getTesto());
         lblTesto.setWrapText(true);
@@ -175,6 +199,28 @@ public class RecensioniController {
 
         return tile;
     }
+
+    private void openRispostaRecensione(ActionEvent e, Recensione rec, String usernameRecensore) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("rispostaRecensione.fxml")
+            );
+            Parent root = loader.load();
+
+            RispostaRecensioneController c = loader.getController();
+            c.setConnectionSocket(socket, in, out);
+            c.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+            c.setData(ristorante, rec, usernameRecensore);
+            c.setOnBackRefresh(() -> Platform.runLater(this::loadReviews));
+
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            lblStatus.setText("Errore apertura pagina risposta");
+        }
+    }
+
 
     private static String stars(int n) {
         int x = Math.max(0, Math.min(5, n));

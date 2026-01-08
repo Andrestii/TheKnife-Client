@@ -39,6 +39,10 @@ public class Recensione implements Serializable {
         return risposta;
     }
 
+    public void setRisposta(String risposta) {
+        this.risposta = risposta;
+    }
+
     @Override
     public String toString() {
         return "[" + stelle + "★] " + testo + " (di utente con ID " + idUtente + ")";
