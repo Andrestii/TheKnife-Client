@@ -107,33 +107,41 @@ public class HomeController {
         // 2) Tipo cucina (il server accetta UNA stringa)
         String tipoCucina = null;
 
-        if (italianaCheck != null && italianaCheck.isSelected()) { tipoCucina = "italiana"; }
-        if (burgerCheck != null && burgerCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "hamburger"; }
-        if (asiaticaCheck != null && asiaticaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "asiatica"; }
-        if (sudamericanaCheck != null && sudamericanaCheck.isSelected()) { if (tipoCucina == null) tipoCucina = "sudamericana"; }
+        if (italianaCheck != null && italianaCheck.isSelected() && filtersBox.isVisible()) { tipoCucina = "italiana"; }
+        if (burgerCheck != null && burgerCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "hamburger"; }
+        if (asiaticaCheck != null && asiaticaCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "asiatica"; }
+        if (sudamericanaCheck != null && sudamericanaCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "sudamericana"; }
 
         // 3) Prezzo min/max
-        Integer prezzoMin = parseNullableInt(prezzoMinField);
-        Integer prezzoMax = parseNullableInt(prezzoMaxField);
+        Integer prezzoMin = null;
+        Integer prezzoMax = null;
+
+        if (filtersBox != null && filtersBox.isVisible()) {
+            prezzoMin = parseNullableInt(prezzoMinField);
+            prezzoMax = parseNullableInt(prezzoMaxField);
+        }
 
         // 4) Delivery / Prenotazioni (null = non filtrare)
         Boolean delivery = null;
-        if (deliverySi != null && deliverySi.isSelected()) delivery = true;
-        else if (deliveryNo != null && deliveryNo.isSelected()) delivery = false;
+
+        if (deliverySi != null && deliverySi.isSelected() && filtersBox.isVisible()) delivery = true;
+        else if (deliveryNo != null && deliveryNo.isSelected() && filtersBox.isVisible()) delivery = false;
 
         Boolean prenotazione = null;
-        if (prenotazioniSi != null && prenotazioniSi.isSelected()) prenotazione = true;
-        else if (prenotazioniNo != null && prenotazioniNo.isSelected()) prenotazione = false;
 
-        System.out.println("[HOME] Ricerca: nome=" + nome + ", citta=" + citta + ", tipo=" + tipoCucina
-                + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione);
+        if (prenotazioniSi != null && prenotazioniSi.isSelected() && filtersBox.isVisible()) prenotazione = true;
+        else if (prenotazioniNo != null && prenotazioniNo.isSelected() && filtersBox.isVisible()) prenotazione = false;
 
         // 5) Voto minimo (null = non filtrare)
         Double votoMin = null;
+        
         if (votoSlider != null && filtersBox != null && filtersBox.isVisible()) {
             double v = Math.round(votoSlider.getValue() * 2) / 2.0; // coerente con label
             if (v > 0) votoMin = v;  // se vuoi permettere "nessun filtro" a 0
         }
+
+        System.out.println("[HOME] Ricerca: nome=" + nome + ", citta=" + citta + ", tipo=" + tipoCucina
+                + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione + ", votoMin=" + votoMin);
 
         // 6) Apri pagina risultati e PASSA i parametri
         FXMLLoader loader = new FXMLLoader(getClass().getResource("risultatiRistoranti.fxml"));
