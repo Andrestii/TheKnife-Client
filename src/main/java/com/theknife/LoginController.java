@@ -100,23 +100,7 @@ public class LoginController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login non riuscito");
             alert.setHeaderText("Credenziali errate");
-            alert.setContentText("Ritorno alla home...");
             alert.showAndWait();
-
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
-                Parent root = loader.load();
-
-                WelcomeController controller = loader.getController();
-                controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
-
-                Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-                stage.getScene().setRoot(root);
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
