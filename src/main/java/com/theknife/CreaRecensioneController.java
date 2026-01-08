@@ -90,7 +90,10 @@ public class CreaRecensioneController {
             if (obj instanceof ServerResponse) {
                 ServerResponse resp = (ServerResponse) obj;
                 if ("OK".equals(resp.getStatus())) {
-                    lblStatus.setText("Recensione inviata!");
+                    //lblStatus.setText("Recensione inviata!");
+                    if (onBackRefresh != null) onBackRefresh.run();
+                    Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                    if (previousRoot != null) stage.getScene().setRoot(previousRoot);
                 } else {
                     lblStatus.setText(String.valueOf(resp.getPayload()));
                 }

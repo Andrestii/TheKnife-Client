@@ -156,7 +156,6 @@ public class EditRecensioneController {
                 ServerResponse resp = (ServerResponse) obj;
 
                 if ("OK".equals(resp.getStatus())) {
-                    // torna alla pagina precedente
                     if (onBackRefresh != null) onBackRefresh.run();
                     Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
                     if (previousRoot != null) stage.getScene().setRoot(previousRoot);
