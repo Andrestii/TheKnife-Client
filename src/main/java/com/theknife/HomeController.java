@@ -128,7 +128,14 @@ public class HomeController {
         System.out.println("[HOME] Ricerca: nome=" + nome + ", citta=" + citta + ", tipo=" + tipoCucina
                 + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione);
 
-        // 5) Apri pagina risultati e PASSA i parametri
+        // 5) Voto minimo (null = non filtrare)
+        Double votoMin = null;
+        if (votoSlider != null && filtersBox != null && filtersBox.isVisible()) {
+            double v = Math.round(votoSlider.getValue() * 2) / 2.0; // coerente con label
+            if (v > 0) votoMin = v;  // se vuoi permettere "nessun filtro" a 0
+        }
+
+        // 6) Apri pagina risultati e PASSA i parametri
         FXMLLoader loader = new FXMLLoader(getClass().getResource("risultatiRistoranti.fxml"));
         Parent root = loader.load();
 
@@ -137,7 +144,7 @@ public class HomeController {
         controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
 
         // ORDINE IDENTICO AL SERVER:
-        controller.setSearchParams(nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione);
+        controller.setSearchParams(nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione, votoMin);
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);

@@ -49,6 +49,7 @@ public class RisultatiRistorantiController {
     private Integer prezzoMax;
     private Boolean delivery;
     private Boolean prenotazione;
+    private Double votoMin;
 
     @FXML
     private void initialize() {
@@ -73,7 +74,7 @@ public class RisultatiRistorantiController {
      */
     public void setSearchParams(String nome, String citta, String tipoCucina,
                                 Integer prezzoMin, Integer prezzoMax,
-                                Boolean delivery, Boolean prenotazione) {
+                                Boolean delivery, Boolean prenotazione, Double votoMin) {
 
         this.nome = nome;
         this.citta = citta;
@@ -82,6 +83,7 @@ public class RisultatiRistorantiController {
         this.prezzoMax = prezzoMax;
         this.delivery = delivery;
         this.prenotazione = prenotazione;
+        this.votoMin = votoMin;
 
         Platform.runLater(this::loadFavoritesThenResults);
     }
@@ -114,6 +116,7 @@ public class RisultatiRistorantiController {
                 out.writeObject(prezzoMax);
                 out.writeObject(delivery);
                 out.writeObject(prenotazione);
+                out.writeObject(votoMin);
                 out.flush();
 
                 Object obj = in.readObject();
