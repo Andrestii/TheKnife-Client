@@ -80,6 +80,9 @@ public class RecensioniController {
             @SuppressWarnings("unchecked")
             List<Recensione> recensioni = (List<Recensione>) resp1.getPayload();
 
+            int tot = (recensioni == null) ? 0 : recensioni.size();
+            lblTitolo.setText("Recensioni - " + ristorante.getNome() + " (" + tot + ")");
+
             if (recensioni == null || recensioni.isEmpty()) {
                 lblStatus.setText("Ancora nessuna recensione");
                 return;

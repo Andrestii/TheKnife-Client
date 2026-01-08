@@ -21,6 +21,7 @@ public class RistoranteController {
     @FXML private ImageView imgRistorante;
 
     @FXML private Label lblNome;
+    @FXML private Label lblMediaStelle;
     @FXML private Label lblTipoCucina;
     @FXML private Label lblIndirizzo;
     @FXML private Label lblCittaNazione;
@@ -45,6 +46,8 @@ public class RistoranteController {
     private boolean isFavorite = false;
     private boolean hasReviewed = false;
     private boolean isOwner = false;
+
+    private double mediaStelle = 0.0;
 
     @FXML
     private void initialize() {
@@ -71,6 +74,7 @@ public class RistoranteController {
             syncOwnerFromServer(); // setta isOwner
             applyUiPolicy();       // riapplica con isOwner aggiornato
             syncButtonsFromServer(); // preferiti/recensione (se li usi)
+            syncAvgRatingFromServer(); // media stelle
         });
     }
 
@@ -79,13 +83,12 @@ public class RistoranteController {
     }
 
     public void refreshReviewAndFavoriteState() {
-        // reset opzionale UI mentre carichi
-        // setStatus("");
 
         Platform.runLater(() -> {
             syncOwnerFromServer();
             applyUiPolicy();
-            syncButtonsFromServer();   // rilegge hasReviewed/isFavorite e aggiorna testo bottoni
+            syncButtonsFromServer(); // rilegge hasReviewed/isFavorite e aggiorna testo bottoni
+            syncAvgRatingFromServer();
         });
     }
 
@@ -342,5 +345,31 @@ public class RistoranteController {
         if (s.isEmpty()) return "-";
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
+
+    private void syncAvgRatingFromServer() {
+        if (out == null || in == null || ristorante == null) return;
+
+        System.out.println("[CLIENT] chiedo media stelle per ristorante id=" + ristorante.getId());
+
+        try {
+            out.writeObject("getRestaurantAvgRating");
+            out.writeObject(ristorante.getId());
+            out.flush();
+
+            Object obj = in.readObject();
+            if (obj instanceof ServerResponse && "OK".equals(((ServerResponse)obj).getStatus())) {
+                Object payload = ((ServerResponse)obj).getPayload();
+                if (payload instanceof Double) mediaStelle = (Double) payload;
+                else if (payload instanceof Number) mediaStelle = ((Number) payload).doubleValue();
+            }
+
+            lblMediaStelle.setText(String.format("%.1f / 5", mediaStelle));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMediaStelle.setText("N/D");
+        }
+    }
+
 
 }

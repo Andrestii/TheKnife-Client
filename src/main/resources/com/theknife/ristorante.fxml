@@ -45,6 +45,11 @@
                            style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: rgb(47,98,84);"/>
 
                     <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="⭐" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="lblMediaStelle" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
                         <Label text="🍽" style="-fx-font-size: 16px;"/>
                         <Label fx:id="lblTipoCucina" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
                     </HBox>
