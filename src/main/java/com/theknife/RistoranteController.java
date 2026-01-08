@@ -38,7 +38,9 @@ public class RistoranteController {
     private ObjectOutputStream out;
 
     private Ristorante ristorante;
+
     private Parent previousRoot;
+    private Runnable onBackRefresh;
 
     private boolean isFavorite = false;
     private boolean hasReviewed = false;
@@ -70,6 +72,10 @@ public class RistoranteController {
             applyUiPolicy();       // riapplica con isOwner aggiornato
             syncButtonsFromServer(); // preferiti/recensione (se li usi)
         });
+    }
+
+    public void setOnBackRefresh(Runnable r) {
+        this.onBackRefresh = r;
     }
 
     public void refreshReviewAndFavoriteState() {
@@ -149,6 +155,7 @@ public class RistoranteController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
+            if (onBackRefresh != null) onBackRefresh.run();
             Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
             if (previousRoot != null) stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {

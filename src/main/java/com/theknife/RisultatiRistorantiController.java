@@ -105,39 +105,40 @@ public class RisultatiRistorantiController {
         try {
             listaRisultati.getChildren().clear();
 
-            out.writeObject("searchRestaurants");
-            out.writeObject(nome);
-            out.writeObject(citta);
-            out.writeObject(tipoCucina);
-            out.writeObject(prezzoMin);
-            out.writeObject(prezzoMax);
-            out.writeObject(delivery);
-            out.writeObject(prenotazione);
-            out.flush();
+            synchronized (ioLock) {
+                out.writeObject("searchRestaurants");
+                out.writeObject(nome);
+                out.writeObject(citta);
+                out.writeObject(tipoCucina);
+                out.writeObject(prezzoMin);
+                out.writeObject(prezzoMax);
+                out.writeObject(delivery);
+                out.writeObject(prenotazione);
+                out.flush();
 
-            Object obj = in.readObject();
-            if (!(obj instanceof ServerResponse)) {
-                System.out.println("[CLIENT] Risposta non valida dal server: " + obj);
-                showEmptyMessage("Errore nel caricamento dei risultati");
-                return;
-            }
+                Object obj = in.readObject();
+                if (!(obj instanceof ServerResponse)) {
+                    showEmptyMessage("Errore nel caricamento dei risultati");
+                    return;
+                }
 
-            ServerResponse resp = (ServerResponse) obj;
-            if (!"OK".equals(resp.getStatus())) {
-                showEmptyMessage("Errore nel caricamento dei risultati");
-                return;
-            }
+                ServerResponse resp = (ServerResponse) obj;
+                if (!"OK".equals(resp.getStatus())) {
+                    showEmptyMessage("Errore nel caricamento dei risultati");
+                    return;
+                }
 
-            @SuppressWarnings("unchecked")
-            List<Ristorante> lista = (List<Ristorante>) resp.getPayload();
+                @SuppressWarnings("unchecked")
+                List<Ristorante> lista = (List<Ristorante>) resp.getPayload();
 
-            if (lista == null || lista.isEmpty()) {
-                showEmptyMessage("Nessun ristorante trovato");
-                return;
-            }
+                if (lista == null || lista.isEmpty()) {
+                    showEmptyMessage("Nessun ristorante trovato");
+                    return;
+                }
 
-            for (Ristorante r : lista) {
-                listaRisultati.getChildren().add(createRestaurantTile(r));
+                for (Ristorante r : lista) {
+                    listaRisultati.getChildren().add(createRestaurantTile(r));
+                }
             }
 
         } catch (Exception ex) {
@@ -145,6 +146,7 @@ public class RisultatiRistorantiController {
             showEmptyMessage("Errore nel caricamento dei risultati");
         }
     }
+
 
     private void loadFavoritesThenResults() {
         // Se guest: niente icone, ma carico comunque i risultati
@@ -283,9 +285,11 @@ public class RisultatiRistorantiController {
                 Parent root = loader.load();
 
                 RistoranteController controller = loader.getController();
+                RisultatiRistorantiController self = this;
                 controller.setConnectionSocket(socket, in, out);
                 controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r);
+                controller.setOnBackRefresh(() -> self.refreshFavoriteState());
 
                 Stage stage = (Stage) tile.getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -338,5 +342,10 @@ public class RisultatiRistorantiController {
             }
         }).start();
     }
+    
+    public void refreshFavoriteState() {
+        Platform.runLater(this::loadFavoritesThenResults);
+    }
+
 
 }

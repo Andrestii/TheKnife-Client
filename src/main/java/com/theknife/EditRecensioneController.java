@@ -125,7 +125,10 @@ public class EditRecensioneController {
             if (obj instanceof ServerResponse) {
                 ServerResponse resp = (ServerResponse) obj;
                 if ("OK".equals(resp.getStatus())) {
-                    lblStatus.setText("Recensione aggiornata!");
+                    //lblStatus.setText("Recensione aggiornata!");
+                    if (onBackRefresh != null) onBackRefresh.run();
+                    Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                    if (previousRoot != null) stage.getScene().setRoot(previousRoot);
                 } else {
                     lblStatus.setText(String.valueOf(resp.getPayload()));
                 }
