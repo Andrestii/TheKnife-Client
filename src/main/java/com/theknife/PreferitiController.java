@@ -159,6 +159,7 @@ public class PreferitiController {
                 controller.setConnectionSocket(socket, in, out);
                 controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r);
+                controller.setOnBackRefresh(() -> Platform.runLater(this::loadFavorites));
 
                 Stage stage = (Stage) tile.getScene().getWindow();
                 stage.getScene().setRoot(root);
