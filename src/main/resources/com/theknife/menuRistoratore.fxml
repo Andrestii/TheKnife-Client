@@ -90,6 +90,22 @@
                            -fx-background-radius: 20;
                            -fx-font-size: 14px;" />
 
+            <Button text="♥ Preferiti"
+                    prefWidth="200"
+                    onAction="#onPreferitiClicked"
+                    style="-fx-background-color: rgb(47,98,84);
+                           -fx-text-fill: white;
+                           -fx-background-radius: 20;
+                           -fx-font-size: 14px;" />
+
+            <Button text="⭐ Recensioni"
+                    prefWidth="200"
+                    onAction="#onRecensioniClicked"
+                    style="-fx-background-color: rgb(47,98,84);
+                           -fx-text-fill: white;
+                           -fx-background-radius: 20;
+                           -fx-font-size: 14px;" />
+
             <Button text="⎋ Logout"
                     prefWidth="200"
                     onAction="#onLogoutClicked"

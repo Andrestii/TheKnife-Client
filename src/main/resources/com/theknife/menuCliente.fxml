@@ -83,7 +83,6 @@
                            -fx-background-radius: 20;
                            -fx-font-size: 14px;" />
 
-            <!-- Cuore corretto -->
             <Button text="♥ Preferiti"
                     prefWidth="200"
                     onAction="#onPreferitiClicked"

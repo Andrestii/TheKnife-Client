@@ -93,6 +93,24 @@ public class MenuRistoratoreController {
     }
 
     @FXML
+    private void onPreferitiClicked(ActionEvent e) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("preferiti.fxml"));
+        root = loader.load();
+
+        PreferitiController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void onRecensioniClicked(ActionEvent e) throws Exception {
+        System.out.println("Recensioni cliccato");
+    }
+
+    @FXML
     private void onLogoutClicked(ActionEvent e) throws Exception {
         System.out.println("Logout eseguito");
         SessioneUtente.getInstance().reset();
