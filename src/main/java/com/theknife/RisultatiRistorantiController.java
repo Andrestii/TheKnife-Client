@@ -277,6 +277,23 @@ public class RisultatiRistorantiController {
             wrapper.getChildren().add(favIcon);
         }
 
+        tile.setOnMouseClicked(ev -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ristorante.fxml"));
+                Parent root = loader.load();
+
+                RistoranteController controller = loader.getController();
+                controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
+                controller.setRistorante(r);
+
+                Stage stage = (Stage) tile.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         return wrapper;
     }
 

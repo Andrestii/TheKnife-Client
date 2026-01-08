@@ -42,6 +42,7 @@ public class RistoranteController {
 
     private boolean isFavorite = false;
     private boolean hasReviewed = false;
+    private boolean isOwner = false;
 
     @FXML
     private void initialize() {
@@ -61,17 +62,35 @@ public class RistoranteController {
     public void setRistorante(Ristorante r) {
         this.ristorante = r;
         renderRistorante();
-        Platform.runLater(this::syncButtonsFromServer);
+
+        applyUiPolicy(); // applica guest/non-guest subito
+
+        Platform.runLater(() -> {
+            syncOwnerFromServer(); // setta isOwner
+            applyUiPolicy();       // riapplica con isOwner aggiornato
+            syncButtonsFromServer(); // preferiti/recensione (se li usi)
+        });
+    }
+
+    public void refreshReviewAndFavoriteState() {
+        // reset opzionale UI mentre carichi
+        // setStatus("");
+
+        Platform.runLater(() -> {
+            syncOwnerFromServer();
+            applyUiPolicy();
+            syncButtonsFromServer();   // rilegge hasReviewed/isFavorite e aggiorna testo bottoni
+        });
     }
 
     private void renderRistorante() {
         if (ristorante == null) return;
 
         lblNome.setText(nvl(ristorante.getNome(), "-"));
-        lblTipoCucina.setText(nvl(ristorante.getTipoCucina(), "Tipologia non specificata"));
+        lblTipoCucina.setText(nvl(capitalizeFirst(ristorante.getTipoCucina()), "Tipologia non specificata"));
         lblIndirizzo.setText(nvl(ristorante.getIndirizzo(), "Indirizzo non disponibile"));
 
-        lblCittaNazione.setText(nvl(ristorante.getCitta(), "-") + ", " + nvl(ristorante.getNazione(), "-"));
+        lblCittaNazione.setText(nvl(capitalizeFirst(ristorante.getCitta()), "-") + ", " + nvl(capitalizeFirst(ristorante.getNazione()), "-"));
 
         // Nella tua classe sono double primitivi: mostro sempre
         lblLatLon.setText(String.format("%.6f, %.6f", ristorante.getLat(), ristorante.getLon()));
@@ -161,6 +180,11 @@ public class RistoranteController {
     private void onWriteOrEditReviewClicked(ActionEvent e) {
         if (ristorante == null) return;
 
+        Ruolo ruolo = SessioneUtente.getInstance().getRuolo();
+        if (ruolo == null || ruolo == Ruolo.GUEST) return;
+        if (ruolo == Ruolo.RISTORATORE && isOwner) return;
+
+
         try {
             String fxml = hasReviewed ? "editRecensione.fxml" : "creaRecensione.fxml";
 
@@ -168,17 +192,21 @@ public class RistoranteController {
             Parent root = loader.load();
 
             Object ctrl = loader.getController();
+            RistoranteController self = this;
             if (ctrl instanceof CreaRecensioneController) {
                 CreaRecensioneController c = (CreaRecensioneController) ctrl;
                 c.setConnectionSocket(socket, in, out);
                 c.setRistorante(ristorante);
                 c.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                c.setOnBackRefresh(() -> self.refreshReviewAndFavoriteState());
             } else if (ctrl instanceof EditRecensioneController) {
                 EditRecensioneController c = (EditRecensioneController) ctrl;
                 c.setConnectionSocket(socket, in, out);
                 c.setRistorante(ristorante);
                 c.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                c.setOnBackRefresh(() -> self.refreshReviewAndFavoriteState());
             }
+
 
             Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
@@ -192,6 +220,10 @@ public class RistoranteController {
     @FXML
     private void onToggleFavoriteClicked(ActionEvent e) {
         if (ristorante == null || out == null || in == null) return;
+
+        Ruolo ruolo = SessioneUtente.getInstance().getRuolo();
+        if (ruolo == null || ruolo == Ruolo.GUEST) return;
+
 
         try {
             String username = SessioneUtente.getInstance().getUsername();
@@ -236,7 +268,72 @@ public class RistoranteController {
         lblStatus.setText(msg == null ? "" : msg);
     }
 
-    private static String nvl(String s, String def) {
+    private static String nvl(String s, String def) { // Null Value Logic
         return (s == null || s.trim().isEmpty()) ? def : s;
     }
+
+    private void hideBtn(Node n) {
+        n.setVisible(false);
+        n.setManaged(false);
+    }
+
+    private void showBtn(Node n) {
+        n.setVisible(true);
+        n.setManaged(true);
+    }
+
+    private void syncOwnerFromServer() { // Chiede al server “sono owner di questo ristorante?”
+        if (out == null || in == null || ristorante == null) return;
+
+        Ruolo ruolo = SessioneUtente.getInstance().getRuolo();
+        if (ruolo == null || ruolo == Ruolo.GUEST) return;
+
+        if (ruolo != Ruolo.RISTORATORE) return;
+
+        try {
+            String username = SessioneUtente.getInstance().getUsername();
+            if (username == null || username.trim().isEmpty()) return;
+
+            out.writeObject("isOwnerOfRestaurant");
+            out.writeObject(username);
+            out.writeObject(ristorante.getId());
+            out.flush();
+
+            Object obj = in.readObject();
+            if (obj instanceof ServerResponse && "OK".equals(((ServerResponse) obj).getStatus())) {
+                Object payload = ((ServerResponse) obj).getPayload();
+                if (payload instanceof Boolean) isOwner = (Boolean) payload;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void applyUiPolicy() {
+        Ruolo ruolo = SessioneUtente.getInstance().getRuolo();
+
+        boolean isGuest = (ruolo == null || ruolo == Ruolo.GUEST);
+        if (isGuest) {
+            hideBtn(btnScriviRecensione);
+            hideBtn(btnPreferiti);
+            return;
+        }
+
+        // default visibili
+        showBtn(btnScriviRecensione);
+        showBtn(btnPreferiti);
+
+        // ristoratore: se è owner del ristorante, niente recensione
+        if (ruolo == Ruolo.RISTORATORE && isOwner) {
+            hideBtn(btnScriviRecensione);
+        }
+    }
+
+    private String capitalizeFirst(String s) {
+        if (s == null) return "-";
+        s = s.trim();
+        if (s.isEmpty()) return "-";
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
 }

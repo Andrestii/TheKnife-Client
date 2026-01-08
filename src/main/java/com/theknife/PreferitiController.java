@@ -150,7 +150,6 @@ public class PreferitiController {
 
         tile.getChildren().addAll(imgBox, nome);
 
-        // DA SISTEMARE:
         tile.setOnMouseClicked(ev -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("ristorante.fxml"));

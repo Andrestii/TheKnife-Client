@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -11,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 public class CreaRecensioneController {
@@ -27,6 +27,7 @@ public class CreaRecensioneController {
     private Parent previousRoot;
 
     private Ristorante ristorante;
+    private Runnable onBackRefresh;
 
     @FXML
     private void initialize() {
@@ -48,9 +49,14 @@ public class CreaRecensioneController {
         this.previousRoot = previousRoot;
     }
 
+    public void setOnBackRefresh(Runnable r) {
+        this.onBackRefresh = r;
+    }
+
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
+            if (onBackRefresh != null) onBackRefresh.run();
             Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
             if (previousRoot != null) stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {

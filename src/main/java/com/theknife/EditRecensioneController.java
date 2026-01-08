@@ -29,6 +29,8 @@ public class EditRecensioneController {
     private Ristorante ristorante;
     private Parent previousRoot;
 
+    private Runnable onBackRefresh;
+
     @FXML
     private void initialize() {
         spStelle.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5, 5));
@@ -48,6 +50,10 @@ public class EditRecensioneController {
         this.ristorante = r;
         lblTitolo.setText("Modifica recensione: " + (r != null ? r.getNome() : ""));
         Platform.runLater(this::loadMyReview);
+    }
+
+    public void setOnBackRefresh(Runnable r) {
+        this.onBackRefresh = r;
     }
 
     private void loadMyReview() {
@@ -85,6 +91,7 @@ public class EditRecensioneController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
+            if (onBackRefresh != null) onBackRefresh.run();
             Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
             if (previousRoot != null) stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
@@ -131,4 +138,39 @@ public class EditRecensioneController {
             lblStatus.setText("Errore durante il salvataggio");
         }
     }
+
+    @FXML
+    private void onDeleteClicked(ActionEvent e) {
+        if (ristorante == null || out == null || in == null) return;
+
+        try {
+            String username = SessioneUtente.getInstance().getUsername();
+
+            out.writeObject("deleteReview");
+            out.writeObject(username);
+            out.writeObject(ristorante.getId());
+            out.flush();
+
+            Object obj = in.readObject();
+            if (obj instanceof ServerResponse) {
+                ServerResponse resp = (ServerResponse) obj;
+
+                if ("OK".equals(resp.getStatus())) {
+                    // torna alla pagina precedente
+                    if (onBackRefresh != null) onBackRefresh.run();
+                    Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                    if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+                } else {
+                    lblStatus.setText(String.valueOf(resp.getPayload()));
+                }
+            } else {
+                lblStatus.setText("Risposta non valida dal server");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            lblStatus.setText("Errore durante l'eliminazione");
+        }
+    }
+
 }
