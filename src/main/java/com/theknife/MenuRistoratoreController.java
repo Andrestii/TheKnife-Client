@@ -107,7 +107,15 @@ public class MenuRistoratoreController {
 
     @FXML
     private void onRecensioniClicked(ActionEvent e) throws Exception {
-        System.out.println("Recensioni cliccato");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("myRecensioni.fxml"));
+        root = loader.load();
+
+        MyRecensioniController controller = loader.getController();
+        controller.setConnectionSocket(socket, in, out);
+        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
     }
 
     @FXML
