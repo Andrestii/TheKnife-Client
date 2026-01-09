@@ -15,10 +15,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata di login.
+ * Gestisce l'inserimento delle credenziali e invia al server la richiesta di
+ * autenticazione,
+ * aggiornando la sessione utente e aprendo la schermata Home in caso di
+ * successo.
+ */
 public class LoginController {
 
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
 
     private Stage stage;
     private Parent root;
@@ -30,8 +39,9 @@ public class LoginController {
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -56,25 +66,25 @@ public class LoginController {
             response = (ServerResponse) in.readObject();
         } catch (ClassNotFoundException ex) {
             throw new IOException("Risposta del server non valida", ex);
-        }  
-            
+        }
+
         if (response.status.equals("OK")) {
             // Aggiorno la sessione con i dati ricevuti
             Utente user = new Utente(
-                response.getPayload().toString().split(";")[0],
-                response.getPayload().toString().split(";")[1],
-                response.getPayload().toString().split(";")[2],
-                response.getPayload().toString().split(";")[3],
-                response.getPayload().toString().split(";")[4],
-                response.getPayload().toString().split(";")[5],
-                response.getPayload().toString().split(";")[6]);
+                    response.getPayload().toString().split(";")[0],
+                    response.getPayload().toString().split(";")[1],
+                    response.getPayload().toString().split(";")[2],
+                    response.getPayload().toString().split(";")[3],
+                    response.getPayload().toString().split(";")[4],
+                    response.getPayload().toString().split(";")[5],
+                    response.getPayload().toString().split(";")[6]);
             sessione.setNome(user.getNome());
             sessione.setCognome(user.getCognome());
             sessione.setDataNascita(user.getDataNascita());
             sessione.setLuogo(user.getDomicilio());
             sessione.setUsername(user.getUsername());
             sessione.setPassword(user.getPassword());
-            if(user.getRuolo().equals("ristoratore")) {
+            if (user.getRuolo().equals("ristoratore")) {
                 sessione.setRuolo(Ruolo.RISTORATORE);
             } else {
                 sessione.setRuolo(Ruolo.CLIENTE);
@@ -87,7 +97,7 @@ public class LoginController {
 
                 HomeController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -95,8 +105,7 @@ public class LoginController {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
-        else {
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login non riuscito");
             alert.setHeaderText("Credenziali errate");
@@ -104,12 +113,12 @@ public class LoginController {
         }
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

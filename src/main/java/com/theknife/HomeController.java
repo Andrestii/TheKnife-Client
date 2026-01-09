@@ -19,25 +19,45 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata Home.
+ * Permette di effettuare ricerche di ristoranti con filtri e naviga
+ * alle schermate successive in base al ruolo dell'utente.
+ */
 public class HomeController {
 
-    @FXML private TextField searchField;
-    @FXML private TextField positionField;
-    @FXML private VBox filtersBox;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private TextField positionField;
+    @FXML
+    private VBox filtersBox;
 
     // Campi filtri
-    @FXML private RadioButton italianaCheck;
-    @FXML private RadioButton burgerCheck;
-    @FXML private RadioButton asiaticaCheck;
-    @FXML private RadioButton sudamericanaCheck;
-    @FXML private TextField prezzoMinField;
-    @FXML private TextField prezzoMaxField;
-    @FXML private RadioButton deliverySi;
-    @FXML private RadioButton deliveryNo;
-    @FXML private RadioButton prenotazioniSi;
-    @FXML private RadioButton prenotazioniNo;
-    @FXML private Slider votoSlider;
-    @FXML private Label votoValueLabel;
+    @FXML
+    private RadioButton italianaCheck;
+    @FXML
+    private RadioButton burgerCheck;
+    @FXML
+    private RadioButton asiaticaCheck;
+    @FXML
+    private RadioButton sudamericanaCheck;
+    @FXML
+    private TextField prezzoMinField;
+    @FXML
+    private TextField prezzoMaxField;
+    @FXML
+    private RadioButton deliverySi;
+    @FXML
+    private RadioButton deliveryNo;
+    @FXML
+    private RadioButton prenotazioniSi;
+    @FXML
+    private RadioButton prenotazioniNo;
+    @FXML
+    private Slider votoSlider;
+    @FXML
+    private Label votoValueLabel;
 
     private ToggleGroup tipoCucinaGroup;
     private ToggleGroup deliveryGroup;
@@ -64,10 +84,14 @@ public class HomeController {
 
         // Gruppi radio per tipologie cucina
         tipoCucinaGroup = new ToggleGroup();
-        if (italianaCheck != null) italianaCheck.setToggleGroup(tipoCucinaGroup);
-        if (burgerCheck != null) burgerCheck.setToggleGroup(tipoCucinaGroup);
-        if (asiaticaCheck != null) asiaticaCheck.setToggleGroup(tipoCucinaGroup);
-        if (sudamericanaCheck != null) sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
+        if (italianaCheck != null)
+            italianaCheck.setToggleGroup(tipoCucinaGroup);
+        if (burgerCheck != null)
+            burgerCheck.setToggleGroup(tipoCucinaGroup);
+        if (asiaticaCheck != null)
+            asiaticaCheck.setToggleGroup(tipoCucinaGroup);
+        if (sudamericanaCheck != null)
+            sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
 
         // Gruppi radio per le opzioni sì/no
         deliveryGroup = new ToggleGroup();
@@ -94,23 +118,36 @@ public class HomeController {
 
     @FXML
     private void onSearchClicked(ActionEvent e) throws Exception {
-        
-        //System.out.println("Ricerca avviata per: " + searchField.getText());
+
+        // System.out.println("Ricerca avviata per: " + searchField.getText());
 
         // 1) Nome e città
         String nome = (searchField != null) ? searchField.getText().trim() : null;
-        if (nome != null && nome.isBlank()) nome = null;
+        if (nome != null && nome.isBlank())
+            nome = null;
 
         String citta = (positionField != null) ? positionField.getText().trim() : null;
-        if (citta != null && (citta.isBlank() || "Posizione".equalsIgnoreCase(citta))) citta = null;
+        if (citta != null && (citta.isBlank() || "Posizione".equalsIgnoreCase(citta)))
+            citta = null;
 
         // 2) Tipo cucina (il server accetta UNA stringa)
         String tipoCucina = null;
 
-        if (italianaCheck != null && italianaCheck.isSelected() && filtersBox.isVisible()) { tipoCucina = "italiana"; }
-        if (burgerCheck != null && burgerCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "hamburger"; }
-        if (asiaticaCheck != null && asiaticaCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "asiatica"; }
-        if (sudamericanaCheck != null && sudamericanaCheck.isSelected() && filtersBox.isVisible()) { if (tipoCucina == null) tipoCucina = "sudamericana"; }
+        if (italianaCheck != null && italianaCheck.isSelected() && filtersBox.isVisible()) {
+            tipoCucina = "italiana";
+        }
+        if (burgerCheck != null && burgerCheck.isSelected() && filtersBox.isVisible()) {
+            if (tipoCucina == null)
+                tipoCucina = "hamburger";
+        }
+        if (asiaticaCheck != null && asiaticaCheck.isSelected() && filtersBox.isVisible()) {
+            if (tipoCucina == null)
+                tipoCucina = "asiatica";
+        }
+        if (sudamericanaCheck != null && sudamericanaCheck.isSelected() && filtersBox.isVisible()) {
+            if (tipoCucina == null)
+                tipoCucina = "sudamericana";
+        }
 
         // 3) Prezzo min/max
         Integer prezzoMin = null;
@@ -124,24 +161,30 @@ public class HomeController {
         // 4) Delivery / Prenotazioni (null = non filtrare)
         Boolean delivery = null;
 
-        if (deliverySi != null && deliverySi.isSelected() && filtersBox.isVisible()) delivery = true;
-        else if (deliveryNo != null && deliveryNo.isSelected() && filtersBox.isVisible()) delivery = false;
+        if (deliverySi != null && deliverySi.isSelected() && filtersBox.isVisible())
+            delivery = true;
+        else if (deliveryNo != null && deliveryNo.isSelected() && filtersBox.isVisible())
+            delivery = false;
 
         Boolean prenotazione = null;
 
-        if (prenotazioniSi != null && prenotazioniSi.isSelected() && filtersBox.isVisible()) prenotazione = true;
-        else if (prenotazioniNo != null && prenotazioniNo.isSelected() && filtersBox.isVisible()) prenotazione = false;
+        if (prenotazioniSi != null && prenotazioniSi.isSelected() && filtersBox.isVisible())
+            prenotazione = true;
+        else if (prenotazioniNo != null && prenotazioniNo.isSelected() && filtersBox.isVisible())
+            prenotazione = false;
 
         // 5) Voto minimo (null = non filtrare)
         Double votoMin = null;
-        
+
         if (votoSlider != null && filtersBox != null && filtersBox.isVisible()) {
             double v = Math.round(votoSlider.getValue() * 2) / 2.0; // coerente con label
-            if (v > 0) votoMin = v;  // se vuoi permettere "nessun filtro" a 0
+            if (v > 0)
+                votoMin = v; // se vuoi permettere "nessun filtro" a 0
         }
 
         System.out.println("[HOME] Ricerca: nome=" + nome + ", citta=" + citta + ", tipo=" + tipoCucina
-                + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione + ", votoMin=" + votoMin);
+                + ", min=" + prezzoMin + ", max=" + prezzoMax + ", delivery=" + delivery + ", pren=" + prenotazione
+                + ", votoMin=" + votoMin);
 
         // 6) Apri pagina risultati e PASSA i parametri
         FXMLLoader loader = new FXMLLoader(getClass().getResource("risultatiRistoranti.fxml"));
@@ -149,12 +192,12 @@ public class HomeController {
 
         RisultatiRistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
         // ORDINE IDENTICO AL SERVER:
         controller.setSearchParams(nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione, votoMin);
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -176,42 +219,42 @@ public class HomeController {
 
         switch (sessione.getRuolo()) {
             case GUEST:
-                //App.setRoot("welcome");
-                
+                // App.setRoot("welcome");
+
                 loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
                 root = loader.load();
 
                 WelcomeController controllerGuest = loader.getController();
                 controllerGuest.setConnectionSocket(socket, in, out);
-                controllerGuest.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                controllerGuest.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 break;
             case CLIENTE:
-                //App.setRoot("menuCliente");
+                // App.setRoot("menuCliente");
 
                 loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
                 root = loader.load();
 
                 MenuClienteController controllerCliente = loader.getController();
                 controllerCliente.setConnectionSocket(socket, in, out);
-                controllerCliente.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                controllerCliente.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 break;
             case RISTORATORE:
-                //App.setRoot("menuRistoratore");
+                // App.setRoot("menuRistoratore");
 
                 loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
                 root = loader.load();
 
                 MenuRistoratoreController controllerRistoratore = loader.getController();
                 controllerRistoratore.setConnectionSocket(socket, in, out);
-                controllerRistoratore.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                controllerRistoratore.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+                stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 break;
             default:
@@ -232,13 +275,13 @@ public class HomeController {
         }
         return null;
     }
-    
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

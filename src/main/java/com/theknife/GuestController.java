@@ -14,6 +14,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata Guest.
+ * Consente all'utente non autenticato di inserire una posizione/luogo,
+ * inizializza la sessione in modalità guest e naviga alla schermata Home.
+ */
 public class GuestController {
 
     private Stage stage;
@@ -30,18 +35,20 @@ public class GuestController {
 
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
-        /*SessioneUtente sessione = SessioneUtente.getInstance();
-            sessione.setNome(posizioneField.getText());
+        /*
+         * SessioneUtente sessione = SessioneUtente.getInstance();
+         * sessione.setNome(posizioneField.getText());
+         * 
+         * System.out.println(socket);
+         * SessioneUtente.getInstance().stampaDettagli();
+         */
 
-        System.out.println(socket);
-        SessioneUtente.getInstance().stampaDettagli();
-        */
-        
-        //App.setRoot("welcome"); // Eliminare riga
+        // App.setRoot("welcome"); // Eliminare riga
 
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -57,25 +64,25 @@ public class GuestController {
         sessione.setRuolo(Ruolo.GUEST);
         SessioneUtente.getInstance().stampaDettagli();
 
-        //App.setRoot("home"); // Eliminare riga
+        // App.setRoot("home"); // Eliminare riga
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
         root = loader.load();
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

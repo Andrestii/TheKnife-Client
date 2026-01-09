@@ -18,6 +18,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata di modifica di un ristorante.
+ * Permette di visualizzare e aggiornare i dati di un ristorante esistente
+ * oppure eliminarlo, comunicando con il server tramite socket.
+ */
 public class EditRistoranteController {
     @FXML
     private TextField nomeField;

@@ -15,6 +15,11 @@ public class SessioneUtente {
 
     private SessioneUtente() { }
 
+    /**
+     * Restituisce l'istanza unica della sessione utente.
+     *
+     * @return istanza di {@link SessioneUtente}
+     */
     public static SessioneUtente getInstance() {
         if (instance == null) {
             instance = new SessioneUtente();
@@ -60,10 +65,16 @@ public class SessioneUtente {
     // -------------------------
     //     Metodi di utilità
     // -------------------------
+    /**
+     * Cancella completamente la sessione corrente eliminando l'istanza singleton.
+     */
     public void clear() {
         instance = null;
     }
 
+    /**
+     * Resetta i dati della sessione mantenendo l'istanza attiva.
+     */
     public void reset() {
         nome = null;
         cognome = null;
@@ -74,6 +85,12 @@ public class SessioneUtente {
         ruolo = null;
     }
 
+    /**
+     * Restituisce una rappresentazione testuale della sessione,
+     * utile per debug e logging.
+     *
+     * @return stringa descrittiva della sessione
+     */
     public void stampaDettagli() { // Metodo di debug
     System.out.println("=== SESSIONE UTENTE ===");
     System.out.println("Ruolo: " + ruolo);

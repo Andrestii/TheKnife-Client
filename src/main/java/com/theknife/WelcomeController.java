@@ -17,12 +17,24 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller JavaFX della schermata di benvenuto.
+ * <p>
+ * Gestisce la navigazione verso registrazione, login e modalità guest,
+ * mantenendo la connessione al server e il riferimento alla schermata
+ * precedente.
+ * </p>
+ */
 public class WelcomeController {
 
-    @FXML private BorderPane rootPane;
-    @FXML private VBox cardBox;
-    @FXML private Label titleLabel;
-    @FXML private VBox linksBox;
+    @FXML
+    private BorderPane rootPane;
+    @FXML
+    private VBox cardBox;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private VBox linksBox;
 
     private Stage stage;
     private Parent root;
@@ -38,9 +50,9 @@ public class WelcomeController {
 
         RegistrazioneController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -53,9 +65,9 @@ public class WelcomeController {
 
         LoginController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -66,12 +78,16 @@ public class WelcomeController {
 
         GuestController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
+    /**
+     * Inizializza la schermata applicando vincoli di layout alla card centrale
+     * (dimensioni calcolate dai contenuti e prevenzione dell'espansione).
+     */
     @FXML
     public void initialize() {
         if (cardBox != null) {
@@ -89,12 +105,20 @@ public class WelcomeController {
         }
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    /**
+     * Imposta la connessione di rete utilizzata dal controller per comunicare con
+     * il server.
+     *
+     * @param socket socket attiva verso il server
+     * @param in     stream di input per ricevere oggetti dal server
+     * @param out    stream di output per inviare oggetti al server
+     */
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

@@ -22,9 +22,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller JavaFX della schermata che mostra i ristoranti associati
+ * all'utente (ristoratore).
+ * <p>
+ * Recupera dal server la lista dei ristoranti dell'utente e li visualizza come
+ * "tile" cliccabili.
+ * Consente inoltre la navigazione verso la creazione di un nuovo ristorante e
+ * verso la modifica
+ * di un ristorante selezionato.
+ * </p>
+ */
 public class RistorantiController {
 
-    @FXML private FlowPane listaRistoranti;
+    @FXML
+    private FlowPane listaRistoranti;
 
     private Stage stage;
     private Parent root;
@@ -43,8 +55,9 @@ public class RistorantiController {
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -57,13 +70,13 @@ public class RistorantiController {
 
         CreaRistoranteController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
@@ -71,13 +84,14 @@ public class RistorantiController {
         // UI pronta, carico dati dal server
         Platform.runLater(this::loadMyRestaurants);
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }
 
     private void loadMyRestaurants() {
-        if (out == null || in == null) return;
+        if (out == null || in == null)
+            return;
 
         try {
             listaRistoranti.getChildren().clear();
@@ -135,12 +149,11 @@ public class RistorantiController {
         tile.setPrefSize(150, 190);
         tile.setMaxSize(150, 190);
         tile.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-border-color: rgb(47,98,84);" +
-            "-fx-border-width: 3;"
-        );
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: rgb(47,98,84);" +
+                        "-fx-border-width: 3;");
 
         ImageView img = new ImageView(new Image(getClass().getResourceAsStream("restaurant.png")));
         img.setFitWidth(110);
@@ -151,12 +164,11 @@ public class RistorantiController {
         imgBox.setPrefSize(110, 90);
         imgBox.setMaxSize(110, 90);
         imgBox.setStyle(
-            "-fx-background-color: #f2f2f2;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-color: #cccccc;" +
-            "-fx-border-width: 1;"
-        );
+                "-fx-background-color: #f2f2f2;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-color: #cccccc;" +
+                        "-fx-border-width: 1;");
 
         // Nome del ristorante
         Label nome = new Label(r.getNome());
@@ -176,7 +188,7 @@ public class RistorantiController {
 
                 EditRistoranteController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
+                controller.setPreviousRoot(((Node) ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r); // dico a EditRistoranteController quale ristorante modificare
 
                 Stage stage = (Stage) tile.getScene().getWindow();

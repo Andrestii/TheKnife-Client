@@ -18,40 +18,70 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata di creazione di un ristorante.
+ * Gestisce la validazione dei campi inseriti dall'utente e invia al server
+ * la richiesta di inserimento del nuovo ristorante.
+ */
 public class CreaRistoranteController {
 
     // --- CAMPI TESTO ---
-    @FXML private TextField nomeField;
-    @FXML private TextField nazioneField;      
-    @FXML private TextField cittaField;
-    @FXML private TextField indirizzoField;
-    @FXML private TextField latitudineField;   
-    @FXML private TextField longitudineField;
-    @FXML private TextField prezzoField;  
+    @FXML
+    private TextField nomeField;
+    @FXML
+    private TextField nazioneField;
+    @FXML
+    private TextField cittaField;
+    @FXML
+    private TextField indirizzoField;
+    @FXML
+    private TextField latitudineField;
+    @FXML
+    private TextField longitudineField;
+    @FXML
+    private TextField prezzoField;
 
     // --- LABEL ERRORI ---
-    @FXML private Label nomeError;
-    @FXML private Label nazioneError;          
-    @FXML private Label cittaError;
-    @FXML private Label indirizzoError;
-    @FXML private Label latitudineError;       
-    @FXML private Label longitudineError;      
-    @FXML private Label cucinaError;
-    @FXML private Label deliveryError;
-    @FXML private Label prenotazioneError;
-    @FXML private Label prezzoError;
+    @FXML
+    private Label nomeError;
+    @FXML
+    private Label nazioneError;
+    @FXML
+    private Label cittaError;
+    @FXML
+    private Label indirizzoError;
+    @FXML
+    private Label latitudineError;
+    @FXML
+    private Label longitudineError;
+    @FXML
+    private Label cucinaError;
+    @FXML
+    private Label deliveryError;
+    @FXML
+    private Label prenotazioneError;
+    @FXML
+    private Label prezzoError;
 
     // --- CHECKBOX CUCINA ---
-    @FXML private CheckBox italianaCheck;
-    @FXML private CheckBox hamburgerCheck;
-    @FXML private CheckBox asiaticaCheck;
-    @FXML private CheckBox sudamericanaCheck;
+    @FXML
+    private CheckBox italianaCheck;
+    @FXML
+    private CheckBox hamburgerCheck;
+    @FXML
+    private CheckBox asiaticaCheck;
+    @FXML
+    private CheckBox sudamericanaCheck;
 
     // --- RADIOBUTTON ---
-    @FXML private RadioButton deliverySi;
-    @FXML private RadioButton deliveryNo;
-    @FXML private RadioButton prenotazioneSi;
-    @FXML private RadioButton prenotazioneNo;
+    @FXML
+    private RadioButton deliverySi;
+    @FXML
+    private RadioButton deliveryNo;
+    @FXML
+    private RadioButton prenotazioneSi;
+    @FXML
+    private RadioButton prenotazioneNo;
 
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenGroup;
@@ -67,12 +97,16 @@ public class CreaRistoranteController {
     @FXML
     public void initialize() {
         deliveryGroup = new ToggleGroup();
-        if (deliverySi != null) deliverySi.setToggleGroup(deliveryGroup);
-        if (deliveryNo != null) deliveryNo.setToggleGroup(deliveryGroup);
+        if (deliverySi != null)
+            deliverySi.setToggleGroup(deliveryGroup);
+        if (deliveryNo != null)
+            deliveryNo.setToggleGroup(deliveryGroup);
 
         prenGroup = new ToggleGroup();
-        if (prenotazioneSi != null) prenotazioneSi.setToggleGroup(prenGroup);
-        if (prenotazioneNo != null) prenotazioneNo.setToggleGroup(prenGroup);
+        if (prenotazioneSi != null)
+            prenotazioneSi.setToggleGroup(prenGroup);
+        if (prenotazioneNo != null)
+            prenotazioneNo.setToggleGroup(prenGroup);
 
         clearErrors();
     }
@@ -80,8 +114,9 @@ public class CreaRistoranteController {
     @FXML
     private void onBackClicked(ActionEvent event) throws IOException {
         try {
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -93,15 +128,14 @@ public class CreaRistoranteController {
         boolean valid = true;
 
         String nome = nomeField.getText().trim();
-        String nazione = nazioneField.getText().trim();          
+        String nazione = nazioneField.getText().trim();
         String citta = cittaField.getText().trim();
         String indirizzo = indirizzoField.getText().trim();
-        String latStr = latitudineField.getText().trim();       
-        String lonStr = longitudineField.getText().trim();     
-        String prezzo = prezzoField.getText().trim();  
+        String latStr = latitudineField.getText().trim();
+        String lonStr = longitudineField.getText().trim();
+        String prezzo = prezzoField.getText().trim();
 
-        boolean cucinaSelezionata =
-                italianaCheck.isSelected() ||
+        boolean cucinaSelezionata = italianaCheck.isSelected() ||
                 hamburgerCheck.isSelected() ||
                 asiaticaCheck.isSelected() ||
                 sudamericanaCheck.isSelected();
@@ -167,7 +201,8 @@ public class CreaRistoranteController {
             valid = false;
         }
 
-        if (!valid) return;
+        if (!valid)
+            return;
 
         // Se i dati sono validi
         boolean delivery = deliverySelected == deliverySi;
@@ -196,38 +231,37 @@ public class CreaRistoranteController {
             response = (ServerResponse) in.readObject();
         } catch (ClassNotFoundException ex) {
             throw new IOException("Risposta del server non valida", ex);
-        }  
-            
+        }
+
         if (response.status.equals("OK")) {
 
-        System.out.println("Ristorante creato correttamente!");
-        System.out.println("Nome: " + nome);
-        System.out.println("Nazione: " + nazione);
-        System.out.println("Città: " + citta);
-        System.out.println("Indirizzo: " + indirizzo);
-        System.out.println("Latitudine: " + lat);
-        System.out.println("Longitudine: " + lon);
-        System.out.println("Delivery: " + delivery);
-        System.out.println("Prenotazioni: " + pren);
-        System.out.println("Tipi di cucina: " + tipoCucina);
-        System.out.println("Prezzo: " + prezzo);
+            System.out.println("Ristorante creato correttamente!");
+            System.out.println("Nome: " + nome);
+            System.out.println("Nazione: " + nazione);
+            System.out.println("Città: " + citta);
+            System.out.println("Indirizzo: " + indirizzo);
+            System.out.println("Latitudine: " + lat);
+            System.out.println("Longitudine: " + lon);
+            System.out.println("Delivery: " + delivery);
+            System.out.println("Prenotazioni: " + pren);
+            System.out.println("Tipi di cucina: " + tipoCucina);
+            System.out.println("Prezzo: " + prezzo);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Creazione Ristorante");
-        alert.setHeaderText("Ristorante creato con successo!");
-        alert.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Creazione Ristorante");
+            alert.setHeaderText("Ristorante creato con successo!");
+            alert.showAndWait();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
-        root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
+            root = loader.load();
 
-        RistorantiController controller = loader.getController();
-        controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)event.getSource()).getScene().getRoot());
+            RistorantiController controller = loader.getController();
+            controller.setConnectionSocket(socket, in, out);
+            controller.setPreviousRoot(((Node) event.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        }
-        else {
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Errore di creazione del ristorante");
             alert.setHeaderText("Creazione del ristorante non riuscita");
@@ -240,7 +274,7 @@ public class CreaRistoranteController {
 
                 RistorantiController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)event.getSource()).getScene().getRoot());
+                controller.setPreviousRoot(((Node) event.getSource()).getScene().getRoot());
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
@@ -275,16 +309,20 @@ public class CreaRistoranteController {
     }
 
     private void setError(TextField field, Label label, String message) {
-        if (label != null) label.setText(message);
-        if (field != null) field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+        if (label != null)
+            label.setText(message);
+        if (field != null)
+            field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
     }
 
     private void resetBorder(TextField field) {
-        if (field != null) field.setStyle("");
+        if (field != null)
+            field.setStyle("");
     }
 
     private Double parseDoubleOrNull(String s) {
-        if (s == null || s.isBlank()) return null;
+        if (s == null || s.isBlank())
+            return null;
         try {
             String normalized = s.replace(",", ".");
             return Double.parseDouble(normalized);
@@ -312,12 +350,12 @@ public class CreaRistoranteController {
         return sb.toString();
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

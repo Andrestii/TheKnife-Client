@@ -13,15 +13,25 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * JavaFX App
+ * Classe principale dell'applicazione client TheKnife.
+ * Avvia l'interfaccia grafica JavaFX, inizializza la connessione
+ * con il server e passa il socket al controller iniziale.
  */
 public class App extends Application {
 
     private static Scene scene;
 
+    /**
+     * Metodo di avvio dell'applicazione JavaFX.
+     * Carica la schermata iniziale, crea la connessione al server
+     * e inizializza il controller con gli stream di comunicazione.
+     *
+     * @param stage stage principale dell'applicazione
+     * @throws IOException se il caricamento dell'FXML fallisce
+     */
     @Override
     public void start(Stage stage) throws IOException {
-        
+
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("welcome.fxml"));
 
         scene = new Scene(fxmlLoader.load(), 640, 480);
@@ -34,13 +44,13 @@ public class App extends Application {
 
         try {
             System.out.println("Client connected: socket = " + socket);
-            
+
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
             WelcomeController controller = fxmlLoader.getController();
             controller.setConnectionSocket(socket, in, out);
-        } catch (IOException e){
+        } catch (IOException e) {
 
         }
 

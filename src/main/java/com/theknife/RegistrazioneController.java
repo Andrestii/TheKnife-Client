@@ -22,27 +22,54 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+/**
+ * Controller JavaFX della schermata di registrazione.
+ * <p>
+ * Gestisce la validazione dei campi inseriti dall'utente, l'aggiornamento della
+ * {@link SessioneUtente}
+ * e l'invio della richiesta di registrazione al server tramite socket. In base
+ * alla risposta del server
+ * effettua la navigazione verso la schermata home oppure ritorna alla welcome.
+ * </p>
+ */
 public class RegistrazioneController {
 
-    @FXML private TextField nomeField;
-    @FXML private TextField cognomeField;
-    @FXML private TextField dataNascitaField;
-    @FXML private TextField domicilioField;
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private PasswordField confermaPasswordField;
-    @FXML private RadioButton clienteRadio;
-    @FXML private RadioButton ristoratoreRadio;
+    @FXML
+    private TextField nomeField;
+    @FXML
+    private TextField cognomeField;
+    @FXML
+    private TextField dataNascitaField;
+    @FXML
+    private TextField domicilioField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField confermaPasswordField;
+    @FXML
+    private RadioButton clienteRadio;
+    @FXML
+    private RadioButton ristoratoreRadio;
 
     // Label di errore sotto ogni campo
-    @FXML private Label nomeError;
-    @FXML private Label cognomeError;
-    @FXML private Label dataError;
-    @FXML private Label domicilioError;
-    @FXML private Label usernameError;
-    @FXML private Label passwordError;
-    @FXML private Label confermaError;
-    @FXML private Label ruoloError;
+    @FXML
+    private Label nomeError;
+    @FXML
+    private Label cognomeError;
+    @FXML
+    private Label dataError;
+    @FXML
+    private Label domicilioError;
+    @FXML
+    private Label usernameError;
+    @FXML
+    private Label passwordError;
+    @FXML
+    private Label confermaError;
+    @FXML
+    private Label ruoloError;
 
     private ToggleGroup ruoloGroup;
     private Stage stage;
@@ -65,8 +92,9 @@ public class RegistrazioneController {
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -159,22 +187,21 @@ public class RegistrazioneController {
                 response = (ServerResponse) in.readObject();
             } catch (ClassNotFoundException ex) {
                 throw new IOException("Risposta del server non valida", ex);
-            }  
-            
+            }
+
             if (response.status.equals("OK")) {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
-            Parent root = loader.load();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
+                Parent root = loader.load();
 
-            HomeController controller = loader.getController();
-            controller.setConnectionSocket(socket, in, out);
-            controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                HomeController controller = loader.getController();
+                controller.setConnectionSocket(socket, in, out);
+                controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root);
+                Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                stage.getScene().setRoot(root);
 
-            }
-            else {
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Errore di registrazione");
                 alert.setHeaderText("Registrazione non riuscita");
@@ -187,7 +214,7 @@ public class RegistrazioneController {
 
                     WelcomeController controller = loader.getController();
                     controller.setConnectionSocket(socket, in, out);
-                    controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                    controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
                     Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                     stage.getScene().setRoot(root);
@@ -204,22 +231,27 @@ public class RegistrazioneController {
     // ---------------------
 
     private void resetErrorLabels() {
-        Label[] labels = { nomeError, cognomeError, dataError, domicilioError, usernameError, passwordError, confermaError, ruoloError };
+        Label[] labels = { nomeError, cognomeError, dataError, domicilioError, usernameError, passwordError,
+                confermaError, ruoloError };
         for (Label l : labels) {
-            if (l != null) l.setText("");
+            if (l != null)
+                l.setText("");
         }
     }
 
     private void resetFieldStyles() {
-        TextField[] campi = { nomeField, cognomeField, dataNascitaField, domicilioField, usernameField, passwordField, confermaPasswordField };
+        TextField[] campi = { nomeField, cognomeField, dataNascitaField, domicilioField, usernameField, passwordField,
+                confermaPasswordField };
         for (TextField f : campi) {
-            if (f != null) f.setStyle(null);
+            if (f != null)
+                f.setStyle(null);
         }
     }
 
     private void mostraErroreCampo(TextField campo, Label erroreLabel, String messaggio) {
         campo.setStyle("-fx-border-color: red; -fx-border-width: 2;");
-        if (erroreLabel != null) erroreLabel.setText(messaggio);
+        if (erroreLabel != null)
+            erroreLabel.setText(messaggio);
     }
 
     private boolean validaNome(String testo) {
@@ -231,13 +263,15 @@ public class RegistrazioneController {
     }
 
     private boolean validaPassword(String testo) {
-        if (testo == null || testo.length() < 8) return false;
+        if (testo == null || testo.length() < 8)
+            return false;
         Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*]).+$");
         return pattern.matcher(testo).matches();
     }
 
     private boolean validaData(String data) {
-        if (data == null || data.isEmpty()) return true;
+        if (data == null || data.isEmpty())
+            return true;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsed = LocalDate.parse(data, formatter);
@@ -251,12 +285,12 @@ public class RegistrazioneController {
         return domicilio != null && domicilio.trim().length() >= 3 && domicilio.matches(".*[a-zA-Z].*");
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

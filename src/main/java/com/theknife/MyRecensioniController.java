@@ -18,11 +18,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata "Le mie recensioni".
+ * Recupera dal server le recensioni inserite dall'utente e le mostra in lista,
+ * permettendo l'apertura della schermata di modifica.
+ */
 public class MyRecensioniController {
 
-    @FXML private Label lblTitolo;
-    @FXML private VBox boxRecensioni;
-    @FXML private Label lblStatus;
+    @FXML
+    private Label lblTitolo;
+    @FXML
+    private VBox boxRecensioni;
+    @FXML
+    private Label lblStatus;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -45,15 +53,17 @@ public class MyRecensioniController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     private void loadMyReviews() {
-        if (out == null || in == null) return;
+        if (out == null || in == null)
+            return;
 
         try {
             boxRecensioni.getChildren().clear();
@@ -111,7 +121,8 @@ public class MyRecensioniController {
                 boxRecensioni.getChildren().add(createMyReviewTile(nomiRistoranti.get(i), recensioni.get(i)));
             }
 
-            if (n == 0) lblStatus.setText("Errore: nomi ristoranti non disponibili");
+            if (n == 0)
+                lblStatus.setText("Errore: nomi ristoranti non disponibili");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -122,12 +133,11 @@ public class MyRecensioniController {
     private VBox createMyReviewTile(String nomeRistorante, Recensione rec) {
         VBox tile = new VBox(8);
         tile.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-border-color: rgb(47,98,84);" +
-            "-fx-border-width: 3;"
-        );
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: rgb(47,98,84);" +
+                        "-fx-border-width: 3;");
         tile.setPadding(new Insets(14));
         tile.setMaxWidth(820);
 
@@ -141,12 +151,11 @@ public class MyRecensioniController {
 
         Button btnModifica = new Button("Modifica");
         btnModifica.setStyle(
-            "-fx-background-color: rgb(47,98,84);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 8;" +
-            "-fx-padding: 6 12;"
-        );
+                "-fx-background-color: rgb(47,98,84);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-padding: 6 12;");
         btnModifica.setOnAction(e -> openEditRecensione(e, rec, nomeRistorante));
 
         header.getChildren().addAll(lblRistorante, lblStelle, btnModifica);
@@ -160,12 +169,11 @@ public class MyRecensioniController {
         if (rec.getRisposta() != null && !rec.getRisposta().trim().isEmpty()) {
             VBox boxRisposta = new VBox(6);
             boxRisposta.setStyle(
-                "-fx-background-color: #f2f2f2;" +
-                "-fx-background-radius: 10;" +
-                "-fx-border-radius: 10;" +
-                "-fx-border-color: #cccccc;" +
-                "-fx-border-width: 1;"
-            );
+                    "-fx-background-color: #f2f2f2;" +
+                            "-fx-background-radius: 10;" +
+                            "-fx-border-radius: 10;" +
+                            "-fx-border-color: #cccccc;" +
+                            "-fx-border-width: 1;");
             boxRisposta.setPadding(new Insets(10));
 
             Label titolo = new Label("Risposta del ristorante:");
@@ -189,29 +197,29 @@ public class MyRecensioniController {
                 return;
             }
 
-            // Creo un ristorante "minimo" perché EditRecensioneController vuole un Ristorante
+            // Creo un ristorante "minimo" perché EditRecensioneController vuole un
+            // Ristorante
             // e usa solo getId() e getNome() per titolo e query getMyReview.
             Ristorante rMin = new Ristorante(
-                rec.getIdRistorante(),
-                nomeRistorante == null ? "" : nomeRistorante,
-                "", "", "",
-                0.0, 0.0,
-                0,
-                false, false,
-                "",
-                ""
-            );
+                    rec.getIdRistorante(),
+                    nomeRistorante == null ? "" : nomeRistorante,
+                    "", "", "",
+                    0.0, 0.0,
+                    0,
+                    false, false,
+                    "",
+                    "");
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("editRecensione.fxml"));
             Parent root = loader.load();
 
             EditRecensioneController c = loader.getController();
             c.setConnectionSocket(socket, in, out);
-            c.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+            c.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
             c.setOnBackRefresh(() -> Platform.runLater(this::loadMyReviews));
             c.setRistorante(rMin);
 
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
 
         } catch (Exception ex) {

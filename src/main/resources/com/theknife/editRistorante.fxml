@@ -176,7 +176,6 @@
                                    -fx-background-radius: 10;
                                    -fx-padding: 10 30;" />
                 </HBox>
-
             </VBox>
         </VBox>
     </center>

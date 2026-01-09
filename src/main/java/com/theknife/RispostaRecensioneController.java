@@ -13,14 +13,31 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+/**
+ * Controller JavaFX della schermata per inserire, modificare o eliminare la
+ * risposta del ristoratore
+ * a una {@link Recensione}.
+ * <p>
+ * Visualizza i dettagli della recensione e invia al server i comandi per
+ * salvare/eliminare la risposta
+ * tramite socket. Al ritorno può eseguire un callback di refresh della
+ * schermata precedente.
+ * </p>
+ */
 public class RispostaRecensioneController {
 
-    @FXML private Label lblTitolo;
-    @FXML private Label lblStelle;
-    @FXML private Label lblRecensione;
-    @FXML private TextArea txtRisposta;
-    @FXML private Button btnDelete;
-    @FXML private Label lblStatus;
+    @FXML
+    private Label lblTitolo;
+    @FXML
+    private Label lblStelle;
+    @FXML
+    private Label lblRecensione;
+    @FXML
+    private TextArea txtRisposta;
+    @FXML
+    private Button btnDelete;
+    @FXML
+    private Label lblStatus;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -70,9 +87,11 @@ public class RispostaRecensioneController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
-            if (onBackRefresh != null) onBackRefresh.run();
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            if (onBackRefresh != null)
+                onBackRefresh.run();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -80,10 +99,12 @@ public class RispostaRecensioneController {
 
     @FXML
     private void onSaveClicked(ActionEvent e) {
-        if (recensione == null || out == null || in == null) return;
+        if (recensione == null || out == null || in == null)
+            return;
 
         String risposta = txtRisposta.getText();
-        if (risposta == null) risposta = "";
+        if (risposta == null)
+            risposta = "";
         risposta = risposta.trim();
 
         if (risposta.isEmpty()) {
@@ -112,9 +133,11 @@ public class RispostaRecensioneController {
             btnDelete.setManaged(true);
             lblStatus.setText("Risposta salvata!");
 
-            if (onBackRefresh != null) onBackRefresh.run();
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            if (onBackRefresh != null)
+                onBackRefresh.run();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -124,7 +147,8 @@ public class RispostaRecensioneController {
 
     @FXML
     private void onDeleteClicked(ActionEvent e) {
-        if (recensione == null || out == null || in == null) return;
+        if (recensione == null || out == null || in == null)
+            return;
 
         try {
             String ownerUsername = SessioneUtente.getInstance().getUsername();
@@ -146,9 +170,11 @@ public class RispostaRecensioneController {
             btnDelete.setManaged(false);
             lblStatus.setText("Risposta eliminata!");
 
-            if (onBackRefresh != null) onBackRefresh.run();
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            if (onBackRefresh != null)
+                onBackRefresh.run();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
 
         } catch (Exception ex) {
             ex.printStackTrace();

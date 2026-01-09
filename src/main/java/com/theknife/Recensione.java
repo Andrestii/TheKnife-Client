@@ -2,6 +2,12 @@ package com.theknife;
 
 import java.io.Serializable;
 
+/**
+ * Rappresenta una recensione lasciata da un utente per un ristorante.
+ * Contiene valutazione in stelle, testo della recensione ed eventuale risposta
+ * del ristoratore.
+ * Utilizzata per la comunicazione client-server.
+ */
 public class Recensione implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -12,6 +18,15 @@ public class Recensione implements Serializable {
     private String testo;
     private String risposta;
 
+    /**
+     * Crea una nuova recensione.
+     *
+     * @param id       identificativo della recensione
+     * @param idUtente identificativo dell'utente autore
+     * @param stelle   valutazione in stelle (1–5)
+     * @param testo    testo della recensione
+     * @param risposta eventuale risposta del ristoratore
+     */
     public Recensione(int id, int idUtente, int stelle, String testo, String risposta) {
         this.id = id;
         this.idUtente = idUtente;

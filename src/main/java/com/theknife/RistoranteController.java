@@ -16,6 +16,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+/**
+ * Controller JavaFX della schermata di dettaglio di un {@link Ristorante}.
+ * <p>
+ * Visualizza le informazioni del ristorante e gestisce le azioni utente (visualizzazione recensioni,
+ * scrittura/modifica recensione, aggiunta/rimozione dai preferiti). Sincronizza inoltre alcuni stati
+ * (owner, preferiti, presenza recensione, media stelle) interrogando il server tramite socket.
+ * </p>
+ */
 public class RistoranteController {
 
     @FXML private ImageView imgRistorante;

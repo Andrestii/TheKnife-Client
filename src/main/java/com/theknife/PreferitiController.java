@@ -22,9 +22,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata dei ristoranti preferiti.
+ * Recupera dal server l'elenco dei preferiti dell'utente
+ * e li visualizza in una griglia selezionabile.
+ */
 public class PreferitiController {
 
-    @FXML private FlowPane listaPreferiti;
+    @FXML
+    private FlowPane listaPreferiti;
 
     private Stage stage;
     private Parent root;
@@ -43,27 +49,29 @@ public class PreferitiController {
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
 
         Platform.runLater(this::loadFavorites);
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }
 
     private void loadFavorites() {
-        if (out == null || in == null) return;
+        if (out == null || in == null)
+            return;
 
         try {
             listaPreferiti.getChildren().clear();
@@ -119,12 +127,11 @@ public class PreferitiController {
         tile.setPrefSize(150, 190);
         tile.setMaxSize(150, 190);
         tile.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-border-color: rgb(47,98,84);" +
-            "-fx-border-width: 3;"
-        );
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: rgb(47,98,84);" +
+                        "-fx-border-width: 3;");
 
         ImageView img = new ImageView(new Image(getClass().getResourceAsStream("restaurant.png")));
         img.setFitWidth(110);
@@ -135,12 +142,11 @@ public class PreferitiController {
         imgBox.setPrefSize(110, 90);
         imgBox.setMaxSize(110, 90);
         imgBox.setStyle(
-            "-fx-background-color: #f2f2f2;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-color: #cccccc;" +
-            "-fx-border-width: 1;"
-        );
+                "-fx-background-color: #f2f2f2;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-color: #cccccc;" +
+                        "-fx-border-width: 1;");
 
         Label nome = new Label(r.getNome());
         nome.setWrapText(true);
@@ -157,7 +163,7 @@ public class PreferitiController {
 
                 RistoranteController controller = loader.getController();
                 controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
+                controller.setPreviousRoot(((Node) ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r);
                 controller.setOnBackRefresh(() -> Platform.runLater(this::loadFavorites));
 
@@ -167,7 +173,6 @@ public class PreferitiController {
                 ex.printStackTrace();
             }
         });
-        
 
         return tile;
     }

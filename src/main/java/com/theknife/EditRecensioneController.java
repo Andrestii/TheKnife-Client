@@ -15,12 +15,21 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata di modifica di una recensione.
+ * Carica la recensione dell'utente per un ristorante, permette di aggiornarla
+ * o eliminarla e invia le operazioni al server tramite socket.
+ */
 public class EditRecensioneController {
 
-    @FXML private Label lblTitolo;
-    @FXML private Spinner<Integer> spStelle;
-    @FXML private TextArea txtTesto;
-    @FXML private Label lblStatus;
+    @FXML
+    private Label lblTitolo;
+    @FXML
+    private Spinner<Integer> spStelle;
+    @FXML
+    private TextArea txtTesto;
+    @FXML
+    private Label lblStatus;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -57,7 +66,8 @@ public class EditRecensioneController {
     }
 
     private void loadMyReview() {
-        if (ristorante == null || out == null || in == null) return;
+        if (ristorante == null || out == null || in == null)
+            return;
 
         try {
             String username = SessioneUtente.getInstance().getUsername();
@@ -91,9 +101,11 @@ public class EditRecensioneController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
-            if (onBackRefresh != null) onBackRefresh.run();
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            if (onBackRefresh != null)
+                onBackRefresh.run();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -101,7 +113,8 @@ public class EditRecensioneController {
 
     @FXML
     private void onSaveClicked(ActionEvent e) {
-        if (ristorante == null || out == null || in == null) return;
+        if (ristorante == null || out == null || in == null)
+            return;
 
         String testo = txtTesto.getText() == null ? "" : txtTesto.getText().trim();
         int stelle = spStelle.getValue();
@@ -125,10 +138,12 @@ public class EditRecensioneController {
             if (obj instanceof ServerResponse) {
                 ServerResponse resp = (ServerResponse) obj;
                 if ("OK".equals(resp.getStatus())) {
-                    //lblStatus.setText("Recensione aggiornata!");
-                    if (onBackRefresh != null) onBackRefresh.run();
-                    Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                    if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+                    // lblStatus.setText("Recensione aggiornata!");
+                    if (onBackRefresh != null)
+                        onBackRefresh.run();
+                    Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                    if (previousRoot != null)
+                        stage.getScene().setRoot(previousRoot);
                 } else {
                     lblStatus.setText(String.valueOf(resp.getPayload()));
                 }
@@ -144,7 +159,8 @@ public class EditRecensioneController {
 
     @FXML
     private void onDeleteClicked(ActionEvent e) {
-        if (ristorante == null || out == null || in == null) return;
+        if (ristorante == null || out == null || in == null)
+            return;
 
         try {
             String username = SessioneUtente.getInstance().getUsername();
@@ -159,9 +175,11 @@ public class EditRecensioneController {
                 ServerResponse resp = (ServerResponse) obj;
 
                 if ("OK".equals(resp.getStatus())) {
-                    if (onBackRefresh != null) onBackRefresh.run();
-                    Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                    if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+                    if (onBackRefresh != null)
+                        onBackRefresh.run();
+                    Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                    if (previousRoot != null)
+                        stage.getScene().setRoot(previousRoot);
                 } else {
                     lblStatus.setText(String.valueOf(resp.getPayload()));
                 }

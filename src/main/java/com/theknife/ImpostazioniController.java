@@ -22,22 +22,40 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata Impostazioni.
+ * Permette all'utente di visualizzare e modificare i propri dati personali,
+ * validare i campi e inviare al server la richiesta di aggiornamento.
+ */
 public class ImpostazioniController {
 
-    @FXML private TextField nomeField;
-    @FXML private TextField cognomeField;
-    @FXML private TextField dataNascitaField;
-    @FXML private TextField domicilioField;
-    @FXML private TextField usernameField;
-    @FXML private TextField passwordField;
-    @FXML private ImageView userIcon;
+    @FXML
+    private TextField nomeField;
+    @FXML
+    private TextField cognomeField;
+    @FXML
+    private TextField dataNascitaField;
+    @FXML
+    private TextField domicilioField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private TextField passwordField;
+    @FXML
+    private ImageView userIcon;
 
-    @FXML private Label nomeError;
-    @FXML private Label cognomeError;
-    @FXML private Label dataError;
-    @FXML private Label domicilioError;
-    @FXML private Label usernameError;
-    @FXML private Label passwordError;
+    @FXML
+    private Label nomeError;
+    @FXML
+    private Label cognomeError;
+    @FXML
+    private Label dataError;
+    @FXML
+    private Label domicilioError;
+    @FXML
+    private Label usernameError;
+    @FXML
+    private Label passwordError;
 
     private Stage stage;
     private Parent root;
@@ -60,7 +78,8 @@ public class ImpostazioniController {
 
         nomeField.setText(sessione.getNome());
         cognomeField.setText(sessione.getCognome());
-        if(sessione.getDataNascita() == null || sessione.getDataNascita().isEmpty() || sessione.getDataNascita().equals("null"))
+        if (sessione.getDataNascita() == null || sessione.getDataNascita().isEmpty()
+                || sessione.getDataNascita().equals("null"))
             dataNascitaField.setText("");
         else
             dataNascitaField.setText(sessione.getDataNascita());
@@ -127,12 +146,12 @@ public class ImpostazioniController {
             SessioneUtente sessione = SessioneUtente.getInstance();
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
                 out.writeObject("updateUserInfo");
-                out.writeObject(sessione.getUsername());    // username attuale (chiave)
+                out.writeObject(sessione.getUsername()); // username attuale (chiave)
                 out.writeObject(nomeField.getText());
                 out.writeObject(cognomeField.getText());
                 out.writeObject(dataNascitaField.getText());
                 out.writeObject(domicilioField.getText());
-                out.writeObject(usernameField.getText());   // eventuale nuovo username
+                out.writeObject(usernameField.getText()); // eventuale nuovo username
                 out.writeObject(passwordField.getText());
                 out.flush();
 
@@ -157,22 +176,21 @@ public class ImpostazioniController {
                     sessione.setLuogo(domicilioField.getText());
                     sessione.setUsername(usernameField.getText());
                     sessione.stampaDettagli();
- 
+
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
                         Parent root = loader.load();
 
                         MenuClienteController controller = loader.getController();
                         controller.setConnectionSocket(socket, in, out);
-                        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+                        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
                         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                         stage.getScene().setRoot(root);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Errore");
                     error.setHeaderText("Impossibile aggiornare i dati");
@@ -187,56 +205,56 @@ public class ImpostazioniController {
     private void onIndietroClicked(ActionEvent e) throws Exception {
 
         /*
-        SessioneUtente sessione = SessioneUtente.getInstance();
-
-        FXMLLoader loader;
-
-        
-        switch (sessione.getRuolo()) {
-            case CLIENTE:
-                //App.setRoot("menuCliente");
-
-                loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
-                root = loader.load();
-
-                MenuClienteController controllerCliente = loader.getController();
-                controllerCliente.setConnectionSocket(socket, in, out);
-
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                stage.getScene().setRoot(root);
-                break;
-
-            case RISTORATORE:
-                //App.setRoot("menuRistoratore");
-
-                loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
-                root = loader.load();
-
-                MenuRistoratoreController controllerRistoratore = loader.getController();
-                controllerRistoratore.setConnectionSocket(socket, in, out);
-
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                stage.getScene().setRoot(root);
-                break;
-
-            default:
-                //App.setRoot("welcome");
-
-                loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
-                root = loader.load();
-
-                WelcomeController controller = loader.getController();
-                controller.setConnectionSocket(socket, in, out);
-                
-                stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-                stage.getScene().setRoot(root);
-                break;
-        }
-        */
+         * SessioneUtente sessione = SessioneUtente.getInstance();
+         * 
+         * FXMLLoader loader;
+         * 
+         * 
+         * switch (sessione.getRuolo()) {
+         * case CLIENTE:
+         * //App.setRoot("menuCliente");
+         * 
+         * loader = new FXMLLoader(getClass().getResource("menuCliente.fxml"));
+         * root = loader.load();
+         * 
+         * MenuClienteController controllerCliente = loader.getController();
+         * controllerCliente.setConnectionSocket(socket, in, out);
+         * 
+         * stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+         * stage.getScene().setRoot(root);
+         * break;
+         * 
+         * case RISTORATORE:
+         * //App.setRoot("menuRistoratore");
+         * 
+         * loader = new FXMLLoader(getClass().getResource("menuRistoratore.fxml"));
+         * root = loader.load();
+         * 
+         * MenuRistoratoreController controllerRistoratore = loader.getController();
+         * controllerRistoratore.setConnectionSocket(socket, in, out);
+         * 
+         * stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+         * stage.getScene().setRoot(root);
+         * break;
+         * 
+         * default:
+         * //App.setRoot("welcome");
+         * 
+         * loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+         * root = loader.load();
+         * 
+         * WelcomeController controller = loader.getController();
+         * controller.setConnectionSocket(socket, in, out);
+         * 
+         * stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+         * stage.getScene().setRoot(root);
+         * break;
+         * }
+         */
 
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) 
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
                 stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -248,22 +266,25 @@ public class ImpostazioniController {
     // ---------------------
 
     private void resetErrorLabels() {
-        Label[] labels = { nomeError, cognomeError, dataError, domicilioError, usernameError, passwordError};
+        Label[] labels = { nomeError, cognomeError, dataError, domicilioError, usernameError, passwordError };
         for (Label l : labels) {
-            if (l != null) l.setText("");
+            if (l != null)
+                l.setText("");
         }
     }
 
     private void resetFieldStyles() {
-        TextField[] campi = { nomeField, cognomeField, dataNascitaField, domicilioField, usernameField, passwordField};
+        TextField[] campi = { nomeField, cognomeField, dataNascitaField, domicilioField, usernameField, passwordField };
         for (TextField f : campi) {
-            if (f != null) f.setStyle(null);
+            if (f != null)
+                f.setStyle(null);
         }
     }
 
     private void mostraErroreCampo(TextField campo, Label erroreLabel, String messaggio) {
         campo.setStyle("-fx-border-color: red; -fx-border-width: 2;");
-        if (erroreLabel != null) erroreLabel.setText(messaggio);
+        if (erroreLabel != null)
+            erroreLabel.setText(messaggio);
     }
 
     private boolean validaNome(String testo) {
@@ -275,13 +296,15 @@ public class ImpostazioniController {
     }
 
     private boolean validaPassword(String testo) {
-        if (testo == null || testo.length() < 8) return false;
+        if (testo == null || testo.length() < 8)
+            return false;
         Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*]).+$");
         return pattern.matcher(testo).matches();
     }
 
     private boolean validaData(String data) {
-        if (data == null || data.isEmpty()) return true;
+        if (data == null || data.isEmpty())
+            return true;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsed = LocalDate.parse(data, formatter);
@@ -295,12 +318,12 @@ public class ImpostazioniController {
         return domicilio != null && domicilio.trim().length() >= 3 && domicilio.matches(".*[a-zA-Z].*");
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

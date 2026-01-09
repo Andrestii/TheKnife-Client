@@ -13,6 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+/**
+ * Controller del menu ristoratore.
+ * Gestisce la navigazione tra le funzionalità disponibili per l'utente
+ * ristoratore,
+ * come home, gestione ristoranti, impostazioni, recensioni e logout.
+ */
 public class MenuRistoratoreController {
 
     private Stage stage;
@@ -34,61 +40,61 @@ public class MenuRistoratoreController {
 
     @FXML
     private void onOverlayClicked(ActionEvent e) throws Exception {
-        //App.setRoot("home");
+        // App.setRoot("home");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
         root = loader.load();
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
     @FXML
     private void onCloseMenuClicked(ActionEvent e) throws Exception {
-        //App.setRoot("home");
+        // App.setRoot("home");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
         root = loader.load();
 
         HomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
     @FXML
     private void onMieiRistorantiClicked(ActionEvent e) throws Exception {
-        //App.setRoot("ristoranti");
+        // App.setRoot("ristoranti");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ristoranti.fxml"));
         root = loader.load();
 
         RistorantiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
     @FXML
     private void onImpostazioniClicked(ActionEvent e) throws Exception {
-        //App.setRoot("impostazioni");
+        // App.setRoot("impostazioni");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("impostazioni.fxml"));
         root = loader.load();
 
         ImpostazioniController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -99,9 +105,9 @@ public class MenuRistoratoreController {
 
         PreferitiController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -112,9 +118,9 @@ public class MenuRistoratoreController {
 
         MyRecensioniController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
@@ -122,25 +128,25 @@ public class MenuRistoratoreController {
     private void onLogoutClicked(ActionEvent e) throws Exception {
         System.out.println("Logout eseguito");
         SessioneUtente.getInstance().reset();
-        //App.setRoot("welcome");
+        // App.setRoot("welcome");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
         root = loader.load();
 
         WelcomeController controller = loader.getController();
         controller.setConnectionSocket(socket, in, out);
-        controller.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+        controller.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
     }
 
-    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
+    public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }

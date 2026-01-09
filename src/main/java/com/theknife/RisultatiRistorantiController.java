@@ -25,10 +25,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
+/**
+ * Controller JavaFX della schermata dei risultati di ricerca dei ristoranti.
+ * <p>
+ * Riceve i parametri di ricerca dalla schermata precedente, interroga il server
+ * per ottenere i ristoranti
+ * corrispondenti e li visualizza come lista di "tile" selezionabili. Per utenti
+ * non guest gestisce anche
+ * la visualizzazione e il toggle dei preferiti, sincronizzando lo stato con il
+ * server.
+ * </p>
+ */
 public class RisultatiRistorantiController {
 
-    @FXML private FlowPane listaRisultati;
+    @FXML
+    private FlowPane listaRisultati;
 
     private Stage stage;
     private Parent root;
@@ -63,18 +74,20 @@ public class RisultatiRistorantiController {
         this.in = in;
         this.out = out;
     }
-    
+
     public void setPreviousRoot(Parent previousRoot) {
         this.previousRoot = previousRoot;
     }
 
     /**
-     * Chiamalo PRIMA di mostrare la pagina (o subito dopo), poi lui carica i risultati.
-     * L’ordine parametri deve combaciare con il server: nome, citta, tipoCucina, prezzoMin, prezzoMax, delivery, prenotazione
+     * Chiamalo PRIMA di mostrare la pagina (o subito dopo), poi lui carica i
+     * risultati.
+     * L’ordine parametri deve combaciare con il server: nome, citta, tipoCucina,
+     * prezzoMin, prezzoMax, delivery, prenotazione
      */
     public void setSearchParams(String nome, String citta, String tipoCucina,
-                                Integer prezzoMin, Integer prezzoMax,
-                                Boolean delivery, Boolean prenotazione, Double votoMin) {
+            Integer prezzoMin, Integer prezzoMax,
+            Boolean delivery, Boolean prenotazione, Double votoMin) {
 
         this.nome = nome;
         this.citta = citta;
@@ -91,8 +104,9 @@ public class RisultatiRistorantiController {
     @FXML
     private void onBackClicked(ActionEvent e) throws IOException {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -150,7 +164,6 @@ public class RisultatiRistorantiController {
         }
     }
 
-
     private void loadFavoritesThenResults() {
         // Se guest: niente icone, ma carico comunque i risultati
         if (SessioneUtente.getInstance().getRuolo() == Ruolo.GUEST) {
@@ -176,7 +189,8 @@ public class RisultatiRistorantiController {
 
                             favoriteIds.clear();
                             if (list != null) {
-                                for (Ristorante r : list) favoriteIds.add(r.getId());
+                                for (Ristorante r : list)
+                                    favoriteIds.add(r.getId());
                             }
                         }
                     }
@@ -203,12 +217,11 @@ public class RisultatiRistorantiController {
         tile.setPrefSize(600, 200);
         tile.setMaxSize(600, 200);
         tile.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-border-color: rgb(47,98,84);" +
-            "-fx-border-width: 3;"
-        );
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: rgb(47,98,84);" +
+                        "-fx-border-width: 3;");
 
         // Immagine a sinistra
         ImageView img = new ImageView(new Image(getClass().getResourceAsStream("restaurant.png")));
@@ -220,12 +233,11 @@ public class RisultatiRistorantiController {
         imgBox.setPrefSize(200, 180);
         imgBox.setMaxSize(200, 180);
         imgBox.setStyle(
-            "-fx-background-color: #f2f2f2;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-color: #cccccc;" +
-            "-fx-border-width: 1;"
-        );
+                "-fx-background-color: #f2f2f2;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-color: #cccccc;" +
+                        "-fx-border-width: 1;");
 
         // Testi a destra
         Label nomeLbl = new Label(r.getNome());
@@ -290,7 +302,7 @@ public class RisultatiRistorantiController {
                 RistoranteController controller = loader.getController();
                 RisultatiRistorantiController self = this;
                 controller.setConnectionSocket(socket, in, out);
-                controller.setPreviousRoot(((Node)ev.getSource()).getScene().getRoot());
+                controller.setPreviousRoot(((Node) ev.getSource()).getScene().getRoot());
                 controller.setRistorante(r);
                 controller.setOnBackRefresh(() -> self.refreshFavoriteState());
 
@@ -305,9 +317,11 @@ public class RisultatiRistorantiController {
     }
 
     private String capitalizeFirst(String s) {
-        if (s == null) return "-";
+        if (s == null)
+            return "-";
         s = s.trim();
-        if (s.isEmpty()) return "-";
+        if (s.isEmpty())
+            return "-";
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
@@ -333,8 +347,10 @@ public class RisultatiRistorantiController {
                     if (obj instanceof ServerResponse) {
                         ServerResponse resp = (ServerResponse) obj;
                         if ("OK".equals(resp.getStatus())) {
-                            if (currentlyFav) favoriteIds.remove(idRistorante);
-                            else favoriteIds.add(idRistorante);
+                            if (currentlyFav)
+                                favoriteIds.remove(idRistorante);
+                            else
+                                favoriteIds.add(idRistorante);
 
                             Platform.runLater(() -> setFavoriteIconImage(icon, !currentlyFav));
                         }
@@ -345,10 +361,9 @@ public class RisultatiRistorantiController {
             }
         }).start();
     }
-    
+
     public void refreshFavoriteState() {
         Platform.runLater(this::loadFavoritesThenResults);
     }
-
 
 }

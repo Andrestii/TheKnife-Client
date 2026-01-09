@@ -15,11 +15,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller della schermata delle recensioni di un ristorante.
+ * Recupera dal server le recensioni e i relativi username e, se l'utente è il
+ * proprietario,
+ * permette di rispondere o modificare la risposta alle recensioni.
+ */
 public class RecensioniController {
 
-    @FXML private Label lblTitolo;
-    @FXML private VBox boxRecensioni;
-    @FXML private Label lblStatus;
+    @FXML
+    private Label lblTitolo;
+    @FXML
+    private VBox boxRecensioni;
+    @FXML
+    private Label lblStatus;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -47,15 +56,17 @@ public class RecensioniController {
     @FXML
     private void onBackClicked(ActionEvent e) {
         try {
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            if (previousRoot != null) stage.getScene().setRoot(previousRoot);
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            if (previousRoot != null)
+                stage.getScene().setRoot(previousRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     private void loadReviews() {
-        if (ristorante == null || out == null || in == null) return;
+        if (ristorante == null || out == null || in == null)
+            return;
 
         try {
             boxRecensioni.getChildren().clear();
@@ -121,11 +132,11 @@ public class RecensioniController {
             int n = Math.min(recensioni.size(), usernames != null ? usernames.size() : 0);
             for (int i = 0; i < n; i++) {
                 boxRecensioni.getChildren().add(
-                    createReviewTile(usernames.get(i), recensioni.get(i), isOwner)
-                );
+                        createReviewTile(usernames.get(i), recensioni.get(i), isOwner));
             }
 
-            if (n == 0) lblStatus.setText("Errore: usernames non disponibili");
+            if (n == 0)
+                lblStatus.setText("Errore: usernames non disponibili");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -136,12 +147,11 @@ public class RecensioniController {
     private VBox createReviewTile(String username, Recensione rec, boolean isOwner) {
         VBox tile = new VBox(8);
         tile.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-border-color: rgb(47,98,84);" +
-            "-fx-border-width: 3;"
-        );
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: rgb(47,98,84);" +
+                        "-fx-border-width: 3;");
         tile.setPadding(new javafx.geometry.Insets(14));
         tile.setMaxWidth(820);
 
@@ -158,15 +168,14 @@ public class RecensioniController {
         // bottone SOLO se owner
         if (isOwner) {
             javafx.scene.control.Button btn = new javafx.scene.control.Button(
-                (rec.getRisposta() != null && !rec.getRisposta().trim().isEmpty()) ? "Modifica risposta" : "Rispondi"
-            );
+                    (rec.getRisposta() != null && !rec.getRisposta().trim().isEmpty()) ? "Modifica risposta"
+                            : "Rispondi");
             btn.setStyle(
-                "-fx-background-color: rgb(47,98,84);" +
-                "-fx-text-fill: white;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 8;" +
-                "-fx-padding: 6 12;"
-            );
+                    "-fx-background-color: rgb(47,98,84);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 8;" +
+                            "-fx-padding: 6 12;");
 
             btn.setOnAction(e -> openRispostaRecensione(e, rec, username));
             header.getChildren().add(btn);
@@ -181,12 +190,11 @@ public class RecensioniController {
         if (rec.getRisposta() != null && !rec.getRisposta().trim().isEmpty()) {
             VBox boxRisposta = new VBox(6);
             boxRisposta.setStyle(
-                "-fx-background-color: #f2f2f2;" +
-                "-fx-background-radius: 10;" +
-                "-fx-border-radius: 10;" +
-                "-fx-border-color: #cccccc;" +
-                "-fx-border-width: 1;"
-            );
+                    "-fx-background-color: #f2f2f2;" +
+                            "-fx-background-radius: 10;" +
+                            "-fx-border-radius: 10;" +
+                            "-fx-border-color: #cccccc;" +
+                            "-fx-border-width: 1;");
             boxRisposta.setPadding(new javafx.geometry.Insets(10));
 
             Label titolo = new Label("Risposta del ristorante:");
@@ -206,24 +214,22 @@ public class RecensioniController {
     private void openRispostaRecensione(ActionEvent e, Recensione rec, String usernameRecensore) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                getClass().getResource("rispostaRecensione.fxml")
-            );
+                    getClass().getResource("rispostaRecensione.fxml"));
             Parent root = loader.load();
 
             RispostaRecensioneController c = loader.getController();
             c.setConnectionSocket(socket, in, out);
-            c.setPreviousRoot(((Node)e.getSource()).getScene().getRoot());
+            c.setPreviousRoot(((Node) e.getSource()).getScene().getRoot());
             c.setData(ristorante, rec, usernameRecensore);
             c.setOnBackRefresh(() -> Platform.runLater(this::loadReviews));
 
-            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
         } catch (Exception ex) {
             ex.printStackTrace();
             lblStatus.setText("Errore apertura pagina risposta");
         }
     }
-
 
     private static String stars(int n) {
         int x = Math.max(0, Math.min(5, n));
