@@ -101,11 +101,8 @@ public class SessioneUtente {
     }
 
     /**
-     * Restituisce una rappresentazione testuale della sessione,
-     * utile per debug e logging.
-     *
-     * @return stringa descrittiva della sessione
-     */
+ * Stampa i dettagli della sessione su console.
+ */
     public void stampaDettagli() { // Metodo di debug
     System.out.println("=== SESSIONE UTENTE ===");
     System.out.println("Ruolo: " + ruolo);
@@ -124,3 +121,7 @@ public class SessioneUtente {
                 nome, cognome, username, ruolo);
     }
 }
+
+
+    
+    
