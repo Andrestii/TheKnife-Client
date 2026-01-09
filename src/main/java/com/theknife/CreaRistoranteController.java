@@ -11,10 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
@@ -41,11 +41,11 @@ public class CreaRistoranteController {
     @FXML private Label prenotazioneError;
     @FXML private Label prezzoError;
 
-    // --- CHECKBOX CUCINA ---
-    @FXML private CheckBox italianaCheck;
-    @FXML private CheckBox hamburgerCheck;
-    @FXML private CheckBox asiaticaCheck;
-    @FXML private CheckBox sudamericanaCheck;
+    // --- TIPOLOGIA CUCINA ---
+    @FXML private RadioButton italianaCheck;
+    @FXML private RadioButton hamburgerCheck;
+    @FXML private RadioButton asiaticaCheck;
+    @FXML private RadioButton sudamericanaCheck;
 
     // --- RADIOBUTTON ---
     @FXML private RadioButton deliverySi;
@@ -53,6 +53,7 @@ public class CreaRistoranteController {
     @FXML private RadioButton prenotazioneSi;
     @FXML private RadioButton prenotazioneNo;
 
+    private ToggleGroup tipoCucinaGroup;
     private ToggleGroup deliveryGroup;
     private ToggleGroup prenGroup;
 
@@ -66,6 +67,12 @@ public class CreaRistoranteController {
 
     @FXML
     public void initialize() {
+        tipoCucinaGroup = new ToggleGroup();
+        if (italianaCheck != null) italianaCheck.setToggleGroup(tipoCucinaGroup);
+        if (hamburgerCheck != null) hamburgerCheck.setToggleGroup(tipoCucinaGroup);
+        if (asiaticaCheck != null) asiaticaCheck.setToggleGroup(tipoCucinaGroup);
+        if (sudamericanaCheck != null) sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
+
         deliveryGroup = new ToggleGroup();
         if (deliverySi != null) deliverySi.setToggleGroup(deliveryGroup);
         if (deliveryNo != null) deliveryNo.setToggleGroup(deliveryGroup);
@@ -294,22 +301,12 @@ public class CreaRistoranteController {
     }
 
     private String buildTipologiaCucina() {
-        StringBuilder sb = new StringBuilder();
-
-        if (italianaCheck.isSelected())
-            sb.append("italiana;");
-        if (hamburgerCheck.isSelected())
-            sb.append("hamburger;");
-        if (asiaticaCheck.isSelected())
-            sb.append("asiatica;");
-        if (sudamericanaCheck.isSelected())
-            sb.append("sudamericana;");
-
-        // Rimuove l’ultimo ';' se presente
-        if (sb.length() > 0)
-            sb.setLength(sb.length() - 1);
-
-        return sb.toString();
+        Toggle t = tipoCucinaGroup.getSelectedToggle();
+        if (t == italianaCheck) return "italiana";
+        if (t == hamburgerCheck) return "hamburger";
+        if (t == asiaticaCheck) return "asiatica";
+        if (t == sudamericanaCheck) return "sudamericana";
+        return "";
     }
 
     public void setConnectionSocket(Socket socket, ObjectInputStream in, ObjectOutputStream out){
