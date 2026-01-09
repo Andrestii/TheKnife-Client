@@ -105,10 +105,10 @@
                         <!-- SINISTRA: Tipologia di cucina -->
                         <VBox spacing="6" prefWidth="200">
                             <Label text="Tipologia di cucina *" style="-fx-font-weight: bold;"/>
-                            <CheckBox fx:id="italianaCheck" text="Italiana"/>
-                            <CheckBox fx:id="hamburgerCheck" text="Hamburger"/>
-                            <CheckBox fx:id="asiaticaCheck" text="Asiatica"/>
-                            <CheckBox fx:id="sudamericanaCheck" text="Sudamericana"/>
+                            <RadioButton fx:id="italianaCheck" text="Italiana"/>
+                            <RadioButton fx:id="hamburgerCheck" text="Hamburger"/>
+                            <RadioButton fx:id="asiaticaCheck" text="Asiatica"/>
+                            <RadioButton fx:id="sudamericanaCheck" text="Sudamericana"/>
                             <Label fx:id="cucinaError" textFill="red" style="-fx-font-size: 10px;"/>
                         </VBox>
 

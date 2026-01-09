@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
@@ -63,13 +64,13 @@ public class EditRistoranteController {
     private Label deliveryError;
 
     @FXML
-    private CheckBox italianaCheck;
+    private RadioButton italianaCheck;
     @FXML
-    private CheckBox hamburgerCheck;
+    private RadioButton hamburgerCheck;
     @FXML
-    private CheckBox asiaticaCheck;
+    private RadioButton asiaticaCheck;
     @FXML
-    private CheckBox sudamericanaCheck;
+    private RadioButton sudamericanaCheck;
 
     @FXML
     private RadioButton prenotazioneSi;
@@ -80,6 +81,7 @@ public class EditRistoranteController {
     @FXML
     private RadioButton deliveryNo;
 
+    private ToggleGroup tipoCucinaGroup;
     private ToggleGroup prenGroup;
     private ToggleGroup deliveryGroup;
     private Stage stage;
@@ -92,6 +94,12 @@ public class EditRistoranteController {
 
     @FXML
     public void initialize() {
+        tipoCucinaGroup = new ToggleGroup();
+        if (italianaCheck != null) italianaCheck.setToggleGroup(tipoCucinaGroup);
+        if (hamburgerCheck != null) hamburgerCheck.setToggleGroup(tipoCucinaGroup);
+        if (asiaticaCheck != null) asiaticaCheck.setToggleGroup(tipoCucinaGroup);
+        if (sudamericanaCheck != null) sudamericanaCheck.setToggleGroup(tipoCucinaGroup);
+
         prenGroup = new ToggleGroup();
         if (prenotazioneSi != null)
             prenotazioneSi.setToggleGroup(prenGroup);
@@ -347,20 +355,12 @@ public class EditRistoranteController {
     }
 
     private String buildTipologiaCucina() {
-        StringBuilder sb = new StringBuilder();
-
-        if (italianaCheck.isSelected())
-            sb.append("italiana;");
-        if (hamburgerCheck.isSelected())
-            sb.append("hamburger;");
-        if (asiaticaCheck.isSelected())
-            sb.append("asiatica;");
-        if (sudamericanaCheck.isSelected())
-            sb.append("sudamericana;");
-
-        if (sb.length() > 0)
-            sb.setLength(sb.length() - 1);
-        return sb.toString();
+        Toggle t = tipoCucinaGroup.getSelectedToggle();
+        if (t == italianaCheck) return "italiana";
+        if (t == hamburgerCheck) return "hamburger";
+        if (t == asiaticaCheck) return "asiatica";
+        if (t == sudamericanaCheck) return "sudamericana";
+        return "";
     }
 
     private void clearErrors() {
